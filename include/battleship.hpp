@@ -7,14 +7,17 @@
 
 #include "bs_grid.hpp"
 
-namespace battleship{
+namespace bship{
     class battleship;
 }
 
 
-class battleship::battleship{
+class bship::battleship{
 public:
-
+    battleship(size_t width, size_t height)
+    :   _grid(width, height)
+    {
+    }
 
 private:
     bs_grid _grid;
