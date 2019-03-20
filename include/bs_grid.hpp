@@ -10,6 +10,10 @@
 #include <vector>
 #include "exceptions.hpp"
 
+// for small printing - uncomment for regular ASCII printing
+#define SMALL_PRINT
+
+
 /*!
     @brief Engine namespace
 
@@ -158,7 +162,10 @@ public:
         // if board is fully populated
         if(_ready) throw illegal_move_exception("All ships already placed");
 
-
+        // check number of ships of type TYPE
+        if(_n_ships.find(type) != _n_ships.end()){
+            
+        }
 
         return true;
     }
@@ -254,7 +261,7 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
 
     // print top line
     os << " ";
-    for(size_t i=0; i<grid._width*3; ++i) os << "_";
+    for(size_t i=0; i<grid._width*3-1; ++i) os << "_";
     os << std::endl;
 
     // print cells
