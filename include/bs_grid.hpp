@@ -189,41 +189,97 @@ private:
 */
 std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
 
-    // print top line
-    os << " ";
-    for(size_t i=0; i<grid._width*3; ++i) os << "_";
-    os << std::endl;
+    // print first line
+    os << "┌─";
+    for(size_t i=0; i<grid._width-1; ++i) os << "──┬─";
+    os << "──┐" << std::endl;
 
     // print cells
     for(size_t r=0; r<grid._height; ++r){
-        os << "|";
+        os << "│";
         for(size_t c=0; c<grid._width; ++c){
             switch(grid.cell_at(r, c).state){
                 case CS_EMPTY:
-                    os << "__";
+                    os << "   ";
                     break;
                 case CS_FULL:
-                    os << "██";
+                    os << "███";
                     break;
                 case CS_MISSED:
-                    os << "×_";
+                    os << " X ";
                     break;
                 case CS_DESTROYED:
-                    // os << "░░";
-                    os << "╬╬";
+                    os << "╬╬╬";
                     break;
             }
-            os << "|";
+            os << "│";
         }
-        // os << "|" << std::endl;
         os << std::endl;
+
+        if(r != grid._height-1){
+            // print line separators
+            os << "├─";
+            for(size_t i=0; i<grid._width-1; ++i) os << "──┼─";
+            os << "──┤" << std::endl;
+        }
     }
-    // os << " ";
-    // for(size_t i=0; i<grid._width*3; ++i) os << "¯";
-    // os << std::endl;
+
+    // print last line
+    os << "└─";
+    for(size_t i=0; i<grid._width-1; ++i) os << "──┴─";
+    os << "──┘" << std::endl;
 
     return os;
 }
+
+
+
+// ================================================
+//                  "SMALL PRINT"
+// ================================================
+
+// /*!
+//     @brief Prints the grid
+
+//     Overloaded operator << to print the grid to an output stream
+
+//     @param os Reference to output stream to print to
+//     @param grid Reference to a bs_grid object
+//     @return Reference to the stream
+// */
+// std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
+
+//     // print top line
+//     os << " ";
+//     for(size_t i=0; i<grid._width*3; ++i) os << "_";
+//     os << std::endl;
+
+//     // print cells
+//     for(size_t r=0; r<grid._height; ++r){
+//         os << "|";
+//         for(size_t c=0; c<grid._width; ++c){
+//             switch(grid.cell_at(r, c).state){
+//                 case CS_EMPTY:
+//                     os << "__";
+//                     break;
+//                 case CS_FULL:
+//                     os << "██";
+//                     break;
+//                 case CS_MISSED:
+//                     os << "×_";
+//                     break;
+//                 case CS_DESTROYED:
+//                     // os << "░░";
+//                     os << "╬╬";
+//                     break;
+//             }
+//             os << "|";
+//         }
+//         os << std::endl;
+//     }
+
+//     return os;
+// }
 
 
 
