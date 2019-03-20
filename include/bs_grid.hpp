@@ -19,10 +19,10 @@ namespace bship{
     
     /// Cell state
     enum cell_state : uint8_t {
-        CL_EMPTY,     ///< the cell has no ship placed, can be targeted
-        CL_FULL,      ///< the cell contains a part of a ship
-        CL_MISSED,    ///< the cell was EMPTY, but has been hit
-        CL_DESTROYED  ///< the cell was FULL, but has been hit
+        CS_EMPTY,     ///< the cell has no ship placed, can be targeted
+        CS_FULL,      ///< the cell contains a part of a ship
+        CS_MISSED,    ///< the cell was EMPTY, but has been hit
+        CS_DESTROYED  ///< the cell was FULL, but has been hit
     };
     
 
@@ -58,7 +58,7 @@ namespace bship{
 */
 struct bship::cell{
 
-    cell_state state   = CL_EMPTY;   ///< state of the cell
+    cell_state state   = CS_EMPTY;   ///< state of the cell
     int        ship_id = -1;         ///< id of ship covering the cell
 
 
@@ -68,7 +68,7 @@ struct bship::cell{
         @return true if cell is empty, false otherwise
     */
     inline bool can_place(){
-        return (state == CL_EMPTY);
+        return (state == CS_EMPTY);
     }
 
 
@@ -78,7 +78,7 @@ struct bship::cell{
         @return true if cell has not been hit yet, false otherwise
     */
     inline bool can_target(){
-        return (state == CL_EMPTY || state == CL_FULL);
+        return (state == CS_EMPTY || state == CS_FULL);
     }
 };
 
@@ -191,7 +191,7 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
 
     // print top line
     os << " ";
-    for(size_t i=0; i<grid._width*3-1; ++i) os << "_";
+    for(size_t i=0; i<grid._width*3; ++i) os << "_";
     os << std::endl;
 
     // print cells
@@ -199,25 +199,28 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
         os << "|";
         for(size_t c=0; c<grid._width; ++c){
             switch(grid.cell_at(r, c).state){
-                case CL_EMPTY:
-                    os << "  ";
+                case CS_EMPTY:
+                    os << "__";
                     break;
-                case CL_FULL:
-                    os << "▒▒";
-                    break;
-                case CL_MISSED:
-                    os << "× ";
-                    break;
-                case CL_DESTROYED:
+                case CS_FULL:
                     os << "██";
                     break;
+                case CS_MISSED:
+                    os << "×_";
+                    break;
+                case CS_DESTROYED:
+                    // os << "░░";
+                    os << "╬╬";
+                    break;
             }
+            os << "|";
         }
-        os << "|" << std::endl;
+        // os << "|" << std::endl;
+        os << std::endl;
     }
-    os << " ";
-    for(size_t i=0; i<grid._width*3-1; ++i) os << "¯";
-    os << std::endl;
+    // os << " ";
+    // for(size_t i=0; i<grid._width*3; ++i) os << "¯";
+    // os << std::endl;
 
     return os;
 }
