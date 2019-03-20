@@ -55,8 +55,29 @@ namespace bship{
     entity was not deemed worthy of existence
 */
 struct bship::cell{
+
     cell_state state   = CL_EMPTY;   ///< state of the cell
     int        ship_id = -1;         ///< id of ship covering the cell
+
+
+    /*!
+        @brief Check if ship part can be placed
+
+        @return true if cell is empty, false otherwise
+    */
+    inline bool can_place(){
+        return (state == CL_EMPTY);
+    }
+
+
+    /*!
+        @brief Check if cell can be hit
+
+        @return true if cell has not been hit yet, false otherwise
+    */
+    inline bool can_target(){
+        return (state == CL_EMPTY || state == CL_FULL);
+    }
 };
 
 
