@@ -6,6 +6,7 @@
 #define BS_GRID_HPP
 
 #include <iostream>
+#include <map>
 #include "exceptions.hpp"
 
 /*!
@@ -14,24 +15,32 @@
     Namespace containing all classes related to the engine
 */
 namespace bship{
-    /*!
-        EMPTY:      the cell has no ship placed, can be targeted
-        FULL:       the cell contains a part of a ship
-        MISSED:     the cell was EMPTY, but has been hit
-        DESTROYED:  the cell was FULL, but has been hit
-    */
-    enum cell_state : uint8_t { CL_EMPTY, CL_FULL, CL_MISSED, CL_DESTROYED };
     
-    /*!
-        SH_ONE:     [_]          SH_TWO:     [_|_]
-
-        SH_THREE:   [_|_|_]      SH_FOUR:    [_|_|_|_]
-    */
-    enum ship_type : uint8_t { SH_ONE, SH_TWO, SH_THREE, SH_FOUR };
-
-    /// orientation of ship (needed when placing a ship)
-    enum ship_orientation : bool { SR_HOR, SR_VERT };
+    /// Cell state
+    enum cell_state : uint8_t {
+        CL_EMPTY,     ///< the cell has no ship placed, can be targeted
+        CL_FULL,      ///< the cell contains a part of a ship
+        CL_MISSED,    ///< the cell was EMPTY, but has been hit
+        CL_DESTROYED  ///< the cell was FULL, but has been hit
+    };
     
+
+    /// Type of ship
+    enum ship_type : uint8_t {
+        ST_ONE,       ///< one-cell ship
+        ST_TWO,       ///< two-cell ship
+        ST_THREE,     ///< three-cell ship
+        ST_FOUR       ///< four-cell ship
+    };
+
+
+    /// Orientation of ship
+    enum ship_orientation : bool {
+        SO_HOR,       ///< horizontal
+        SO_VERT       ///< vertical
+    };
+    
+
     struct cell;
     class bs_grid;
 }
@@ -46,8 +55,8 @@ namespace bship{
     entity was not deemed worthy of existence
 */
 struct bship::cell{
-    cell_state state   = CL_EMPTY;
-    int        ship_id = -1;
+    cell_state state   = CL_EMPTY;   ///< state of the cell
+    int        ship_id = -1;         ///< id of ship covering the cell
 };
 
 
@@ -102,24 +111,34 @@ public:
         @return Reference to the requested cell
     */
     inline cell& cell_at(size_t row, size_t col){
-        if(row >= _height || col >= _width) throw index_exception();
+        if(row >= _height || col >= _width)
+            throw index_exception(row, col, "Index out of bound: ");
+
         return _data[row*_width + col];
     }
 
 
-    // (row, col) is the left- and upper-most cell of the ship
-    // returns false if its impossible to place the ship at the 
-    // given location, true otherwise
-    bool place_ship(ship_type type, size_t row, size_t col, ship_orientation ornt){
+    /*!
+        @brief Ship placement
+
+        Checks provided placement coordinates and places the ship on the board
+        if possible
+
+        @param row, col Coordinates of left- and upper-most cell of the ship
+        @param orient Orientation of the ship (SO_HOR or SO_VER)
+        @return false if its impossible to place the ship at the 
+                given configuration, true otherwise
+    */
+    bool place_ship(ship_type type, size_t row, size_t col, ship_orientation orient){
         return true;
     }
 
 
 private:
-    size_t    _width;       ///< width of the grid
-    size_t    _height;      ///< height of the grid
-    cell     *_data;        ///< actual cells of the grid
-    uint8_t   _n_ships[4];  ///< number of ships of each type
+    size_t                        _width;    ///< width of the grid
+    size_t                        _height;   ///< height of the grid
+    cell                         *_data;     ///< actual cells of the grid
+    std::map<ship_type, uint8_t>  _n_ships;  ///< number of ships of each type
 
 };
 
