@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <exception>
+#include <string>
+
 
 namespace bship{
     class bship_exception;
@@ -22,8 +24,15 @@ namespace bship{
     The base class to all exceptions related to battleship engine
 */
 class bship::bship_exception : public std::exception{
+public:
 
-    virtual const char *what() const throw(){
+    /*!
+        @brief Base class what()
+
+        Returns a generic error message ("Battleship exception"), 
+        is overloaded in its children bship exceptions
+    */
+    virtual const char *what() const noexcept {
     	return "Battleship exception";
     }
 
@@ -40,9 +49,30 @@ class bship::bship_exception : public std::exception{
     is carried out with indices of bs_grid
 */
 class bship::index_exception : public bship_exception{
+    int          _row_idx;   //< row index
+    int          _col_idx;   //< column index
+    std::string  _msg;       //< message of the exception
+
+public:
+
+    /*!
+        @brief Index exception constructor
+
+        Constructs an index_exception given indices and a message
+
+        @param row Row index
+        @param col Column index
+        @param msg Custom message (default: "Error at index")
+    */
+    index_exception(int row, int col, const char* msg = "Error at index")
+    :   _row_idx(row), _col_idx(col)
+    {
+        _msg = std::string(msg) + " [" + std::to_string(_row_idx) + ", " + std::to_string(_col_idx) + "]";
+    }
+
 
     const char *what(){
-    	return "";
+    	return _msg.c_str();
     }
 
 };
