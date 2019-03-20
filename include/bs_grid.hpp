@@ -217,6 +217,7 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
     }
     os << " ";
     for(size_t i=0; i<grid._width*3-1; ++i) os << "¯";
+    os << std::endl;
 
     return os;
 }
