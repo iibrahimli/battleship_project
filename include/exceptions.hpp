@@ -13,6 +13,7 @@
 namespace bship{
     class bship_exception;
     class index_exception;
+    class illegal_move_exception;
 }
 
 
@@ -77,6 +78,43 @@ public:
         @brief Overridden what()
 
         @return User-supplied message or default "Error at index (i, j)"
+    */
+    const char *what(){
+    	return _msg.c_str();
+    }
+
+};
+
+
+
+/*!
+    @class illegal_move_exception
+
+    @brief Illegal move exception
+
+    This exception is thrown in case an invalid game move is attempted
+*/
+class bship::illegal_move_exception : public bship_exception{
+    std::string  _msg;       //< message of the exception
+
+public:
+
+    /*!
+        @brief Illegal move exception constructor
+
+        Constructs an illegal_move_exception given a message
+
+        @param msg Custom message (default: "Illegal move")
+    */
+    illegal_move_exception(int row = -1, int col = -1, const char* msg = "Illegal move")
+    :   _msg(msg)
+    {}
+
+
+    /*!
+        @brief Overridden what()
+
+        @return User-supplied message or default "Illegal move"
     */
     const char *what(){
     	return _msg.c_str();
