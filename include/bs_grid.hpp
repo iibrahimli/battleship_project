@@ -112,7 +112,7 @@ public:
     */
     inline cell& cell_at(size_t row, size_t col){
         if(row >= _height || col >= _width)
-            throw index_exception(row, col, "Index out of bound: ");
+            throw index_exception(row, col, "Index out of bounds: ");
 
         return _data[row*_width + col];
     }
@@ -124,6 +124,7 @@ public:
         Checks provided placement coordinates and places the ship on the board
         if possible
 
+        @param type Type of ship to be placed (example: ST_TWO)
         @param row, col Coordinates of left- and upper-most cell of the ship
         @param orient Orientation of the ship (SO_HOR or SO_VER)
         @return false if its impossible to place the ship at the 

@@ -1,5 +1,5 @@
 /*!
-    @file Custom exceptions for the bship engine
+    Custom exceptions for the bship engine
 */
 
 #ifndef EXCEPTIONS_HPP
@@ -30,7 +30,9 @@ public:
         @brief Base class what()
 
         Returns a generic error message ("Battleship exception"), 
-        is overloaded in its children bship exceptions
+        is overrided in its children bship exceptions
+
+        @return Message of the exception
     */
     virtual const char *what() const noexcept {
     	return "Battleship exception";
@@ -71,6 +73,11 @@ public:
     }
 
 
+    /*!
+        @brief Overridden what()
+
+        @return User-supplied message or default "Error at index (i, j)"
+    */
     const char *what(){
     	return _msg.c_str();
     }
