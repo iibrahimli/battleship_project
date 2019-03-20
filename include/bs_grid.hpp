@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <map>
+#include <vector>
 #include "exceptions.hpp"
 
 /*!
@@ -43,6 +44,7 @@ namespace bship{
 
     struct cell;
     class bs_grid;
+    std::ostream& operator<<(std::ostream& os, bs_grid& grid);
 }
 
 
@@ -103,7 +105,8 @@ public:
     */
     bs_grid(size_t width, size_t height)
     :   _width(width),
-        _height(height)
+        _height(height),
+        _ready(false)
     {
         _data = new cell[_width * _height];
     }
@@ -127,8 +130,7 @@ public:
         Easy cell access
         (cells are stored in row-major order)
 
-        @param row Row number of requested cell
-        @param col Column number of requested cell
+        @param row, col Coordinates of requested cell
         @return Reference to the requested cell
     */
     inline cell& cell_at(size_t row, size_t col){
@@ -152,8 +154,17 @@ public:
                 given configuration, true otherwise
     */
     bool place_ship(ship_type type, size_t row, size_t col, ship_orientation orient){
+
+        // if board is fully populated
+        if(_ready) throw illegal_move_exception("All ships already placed");
+
+
+
         return true;
     }
+
+
+    friend std::ostream& operator<<(std::ostream& os, bship::bs_grid& grid);
 
 
 private:
@@ -161,8 +172,55 @@ private:
     size_t                        _height;   ///< height of the grid
     cell                         *_data;     ///< actual cells of the grid
     std::map<ship_type, uint8_t>  _n_ships;  ///< number of ships of each type
+    bool                          _ready;    ///< true if all available ships are placed
 
 };
+
+
+
+/*!
+    @brief Prints the grid
+
+    Overloaded operator << to print the grid to an output stream
+
+    @param os Reference to output stream to print to
+    @param grid Reference to a bs_grid object
+    @return Reference to the stream
+*/
+std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
+
+    // print top line
+    os << " ";
+    for(size_t i=0; i<grid._width*3-1; ++i) os << "_";
+    os << std::endl;
+
+    // print cells
+    for(size_t r=0; r<grid._height; ++r){
+        os << "|";
+        for(size_t c=0; c<grid._width; ++c){
+            switch(grid.cell_at(r, c).state){
+                case CL_EMPTY:
+                    os << "  ";
+                    break;
+                case CL_FULL:
+                    os << "▒▒";
+                    break;
+                case CL_MISSED:
+                    os << "× ";
+                    break;
+                case CL_DESTROYED:
+                    os << "██";
+                    break;
+            }
+        }
+        os << "|" << std::endl;
+    }
+    os << " ";
+    for(size_t i=0; i<grid._width*3-1; ++i) os << "¯";
+
+    return os;
+}
+
 
 
 #endif
