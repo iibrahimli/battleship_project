@@ -164,7 +164,7 @@ public:
 
         // check number of ships of type TYPE
         if(_n_ships.find(type) != _n_ships.end()){
-            
+            ++_n_ships[type];
         }
 
         return true;
