@@ -187,9 +187,9 @@ public:
         if(_ready)
             throw illegal_move_exception("All ships have already been placed");
 
-        // check number of ships of type TYPE
-        if(_n_ships.find(type) != _n_ships.end()){
-            ++_n_ships[type];
+        // check if ship type TYPE exists
+        if(_n_ships.find(type) == _n_ships.end()){
+            throw illegal_move_exception("Unknown ship type");
         }
 
         // holds cells to place ship on if placement is possible
@@ -199,8 +199,14 @@ public:
         // loop over the ship length
         for(int sz=0; sz<type; ++sz){
 
-            // if any of the cells are not available, the placement cannot be done
-            if(!cell_at(r, c).can_place()) return false;
+            try{
+                // if any of the cells are not available, the placement cannot be done
+                if(!cell_at(r, c).can_place()) return false;
+            }
+            catch(index_exception& e){
+                // placement is not possible if a coordinate is out of bounds
+                return false;
+            }
 
             // if the cell is okay to place, add it to vector
             to_place.push_back({r, c});
@@ -208,6 +214,13 @@ public:
             if(orient == SO_HOR) ++c;
             else ++r;
         }
+
+        // place ship
+        for(auto& coord : to_place){
+            cell_at(coord.first, coord.second).state = CS_FULL;
+        }
+        
+        ++_n_ships[type];
 
         return true;
     }
