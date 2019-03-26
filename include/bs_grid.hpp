@@ -262,9 +262,7 @@ public:
         else if(cell_at(row, col).state == CS_FULL){
             cell_at(row, col).state = CS_DESTROYED;
 
-            
-
-            sr = SR_HIT;
+            // TODO check if the ship has been sunk
         }
 
         return sr;
