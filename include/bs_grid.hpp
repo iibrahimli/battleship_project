@@ -130,16 +130,11 @@ public:
             {ST_FOUR,  1},
             {ST_FIVE,  1}
         }),
-
-        // there are no ships at the beginning
-        _n_ships({
-            {ST_TWO,   0},
-            {ST_THREE, 0},
-            {ST_FOUR,  0},
-            {ST_FIVE,  0}
-        }),
         _ready(false)
     {
+
+        // there are no ships at the beginning
+        for(auto& tp : _max_n_ships) _n_ships[tp.first] = 0;
 
         // allocate memory for the cell array
         _data = new cell[_width * _height];
@@ -159,6 +154,10 @@ public:
 
     /// Getter for height
     size_t height() const { return _height; }
+
+
+    /// True if all ships have been placed
+    bool is_ready() const { return _ready; }
 
 
     /*!
@@ -202,6 +201,11 @@ public:
             throw illegal_move_exception("Unknown ship type");
         }
 
+        // check if maximum # of ships of type type have already been placed
+        if(_n_ships[type] == _max_n_ships[type]){
+            throw illegal_move_exception("Ship type has been placed MAX times already");
+        }
+
         // holds cells to place ship on if placement is possible
         std::vector<std::pair<size_t, size_t>> to_place;
         size_t r = row, c = col;
@@ -231,6 +235,11 @@ public:
         }
         
         ++_n_ships[type];
+
+        // check all ships and set _ready
+        bool rd = true;
+        for(auto& tp : _n_ships)
+            rd = rd && (tp.second == _max_n_ships[tp.first]);
 
         return true;
     }
