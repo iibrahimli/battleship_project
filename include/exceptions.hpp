@@ -70,7 +70,7 @@ public:
     index_exception(int row, int col, const char* msg = "Error at index")
     :   _row_idx(row), _col_idx(col)
     {
-        _msg = std::string(msg) + " (" + std::to_string(_row_idx) + ", " + std::to_string(_col_idx) + ")";
+        _msg = std::string("Index exception: ") + std::string(msg) + " (" + std::to_string(_row_idx) + ", " + std::to_string(_col_idx) + ")";
     }
 
 
@@ -107,7 +107,7 @@ public:
         @param msg Custom message (default: "Illegal move")
     */
     illegal_move_exception(const char* msg = "Illegal move")
-    :   _msg(msg)
+    :   _msg(std::string("Illegal move exception: ") + msg)
     {}
 
 
