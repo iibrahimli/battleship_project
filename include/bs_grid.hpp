@@ -5,10 +5,13 @@
 #ifndef BS_GRID_HPP
 #define BS_GRID_HPP
 
+
 #include <iostream>
 #include <map>
 #include <vector>
+#include <algorithm>
 #include "exceptions.hpp"
+
 
 // for small printing - uncomment for regular ASCII printing
 #define SMALL_PRINT
@@ -30,12 +33,12 @@ namespace bship{
     };
     
 
-    /// Type of ship
+    /// Type (and size, kinda) of ship (underlying value shows the size of ship) (MODIFY if necessary)
     enum ship_type : uint8_t {
-        ST_ONE,       ///< one-cell ship
-        ST_TWO,       ///< two-cell ship
+        ST_TWO=2,     ///< two-cell ship
         ST_THREE,     ///< three-cell ship
-        ST_FOUR       ///< four-cell ship
+        ST_FOUR,      ///< four-cell ship
+        ST_FIVE       ///< five-cell ship
     };
 
 
@@ -49,6 +52,7 @@ namespace bship{
     struct cell;
     class bs_grid;
     std::ostream& operator<<(std::ostream& os, bs_grid& grid);
+
 }
 
 
@@ -67,7 +71,7 @@ struct bship::cell{
 
 
     /*!
-        @brief Check if ship part can be placed
+        @brief Check if ship part can be placed on the cell
 
         @return true if cell is empty, false otherwise
     */
@@ -77,7 +81,7 @@ struct bship::cell{
 
 
     /*!
-        @brief Check if cell can be hit
+        @brief Check if the cell can be hit
 
         @return true if cell has not been hit yet, false otherwise
     */
@@ -110,15 +114,34 @@ public:
     bs_grid(size_t width, size_t height)
     :   _width(width),
         _height(height),
+        // maximum number of ships (MODIFY if necessary)
+        _max_n_ships({
+            {ST_TWO,   1},
+            {ST_THREE, 2},
+            {ST_FOUR,  1},
+            {ST_FIVE,  1}
+        }),
+        // there are no ships at the beginning
+        _n_ships({
+            {ST_TWO,   0},
+            {ST_THREE, 0},
+            {ST_FOUR,  0},
+            {ST_FIVE,  0}
+        }),
         _ready(false)
     {
+
+        // allocate memory for the cell array
         _data = new cell[_width * _height];
+
     }
 
 
+    /// Destructor frees _data
     ~bs_grid(){
         delete[] _data;
     }
+
 
     /// Getter for width
     size_t width() const { return _width; }
@@ -141,6 +164,7 @@ public:
         if(row >= _height || col >= _width)
             throw index_exception(row, col, "Index out of bounds: ");
 
+        // row-major order
         return _data[row*_width + col];
     }
 
@@ -152,19 +176,37 @@ public:
         if possible
 
         @param type Type of ship to be placed (example: ST_TWO)
-        @param row, col Coordinates of left- and upper-most cell of the ship
+        @param row, col Coordinates of left- and upper-most (!) cell of the ship
         @param orient Orientation of the ship (SO_HOR or SO_VER)
         @return false if its impossible to place the ship at the 
                 given configuration, true otherwise
     */
     bool place_ship(ship_type type, size_t row, size_t col, ship_orientation orient){
 
-        // if board is fully populated
-        if(_ready) throw illegal_move_exception("All ships already placed");
+        // if board is fully populated, there are no more ships to place
+        if(_ready)
+            throw illegal_move_exception("All ships have already been placed");
 
         // check number of ships of type TYPE
         if(_n_ships.find(type) != _n_ships.end()){
             ++_n_ships[type];
+        }
+
+        // holds cells to place ship on if placement is possible
+        std::vector<std::pair<size_t, size_t>> to_place;
+        size_t r = row, c = col;
+
+        // loop over the ship length
+        for(int sz=0; sz<type; ++sz){
+
+            // if any of the cells are not available, the placement cannot be done
+            if(!cell_at(r, c).can_place()) return false;
+
+            // if the cell is okay to place, add it to vector
+            to_place.push_back({r, c});
+
+            if(orient == SO_HOR) ++c;
+            else ++r;
         }
 
         return true;
@@ -175,13 +217,15 @@ public:
 
 
 private:
-    size_t                        _width;    ///< width of the grid
-    size_t                        _height;   ///< height of the grid
-    cell                         *_data;     ///< actual cells of the grid
-    std::map<ship_type, uint8_t>  _n_ships;  ///< number of ships of each type
-    bool                          _ready;    ///< true if all available ships are placed
+    size_t                        _width;        ///< width of the grid
+    size_t                        _height;       ///< height of the grid
+    cell                         *_data;         ///< actual cells of the grid
+    std::map<ship_type, uint8_t>  _n_ships;      ///< number of ships of each type
+    std::map<ship_type, uint8_t>  _max_n_ships;  ///< maximum number of ships of each type
+    bool                          _ready;        ///< true iff all ships have been placed
 
 };
+
 
 
 
