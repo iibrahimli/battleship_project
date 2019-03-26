@@ -47,6 +47,14 @@ namespace bship{
         SO_HOR,       ///< horizontal
         SO_VERT       ///< vertical
     };
+
+
+    /// result of a hit on a cell
+    enum shot_result : uint8_t {
+        SR_MISS,      ///< the shot cell was empty
+        SR_HIT,       ///< the shot hit a part of a ship
+        SR_SINK       ///< the shot sinked a ship (hit the last standing part of the ship)
+    };
     
 
     struct cell;
@@ -81,11 +89,11 @@ struct bship::cell{
 
 
     /*!
-        @brief Check if the cell can be hit
+        @brief Check if the cell can be shot at
 
-        @return true if cell has not been hit yet, false otherwise
+        @return true if cell has not been shot at yet, false otherwise
     */
-    inline bool can_target(){
+    inline bool can_shoot(){
         return (state == CS_EMPTY || state == CS_FULL);
     }
 };
@@ -114,6 +122,7 @@ public:
     bs_grid(size_t width, size_t height)
     :   _width(width),
         _height(height),
+
         // maximum number of ships (MODIFY if necessary)
         _max_n_ships({
             {ST_TWO,   1},
@@ -121,6 +130,7 @@ public:
             {ST_FOUR,  1},
             {ST_FIVE,  1}
         }),
+
         // there are no ships at the beginning
         _n_ships({
             {ST_TWO,   0},
@@ -224,6 +234,42 @@ public:
 
         return true;
     }
+
+
+
+    /*!
+        @brief Shooting
+
+        Checks provided shot coordinates and shoots the cell if possible.
+        Throws an index_exception if the coordinates are out of bounds
+
+        @param row, col Coordinates of the cell to be shot at
+        @return The result of the shot (one of HT_MISS, HT_HIT, and HT_SINK)
+    */
+    shot_result shoot_at(size_t row, size_t col){
+        
+        // the move is illegal if the cell has been shot before
+        if(!cell_at(row, col).can_shoot())
+            throw illegal_move_exception("Cell has been shot before");
+
+        shot_result sr;
+
+        // change state of the cell depending on previous state
+        if(cell_at(row, col).state == CS_EMPTY){
+            cell_at(row, col).state = CS_MISSED;
+            sr = SR_MISS;
+        }
+        else if(cell_at(row, col).state == CS_FULL){
+            cell_at(row, col).state = CS_DESTROYED;
+
+            
+
+            sr = SR_HIT;
+        }
+
+        return sr;
+    }
+
 
 
     friend std::ostream& operator<<(std::ostream& os, bship::bs_grid& grid);
