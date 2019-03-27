@@ -15,8 +15,7 @@ class test_bs_grid : public CppUnit::TestCase{
 
 public:
 
-    test_bs_grid(std::string name)
-    :   TestCase(name) {}
+    test_bs_grid() {}
 
 
     // test constructor
@@ -43,11 +42,18 @@ public:
     }
 
 
+    // test stats (# of ships, # of shots etc)
+    void test_stats(){
+
+    }
+
+
     CPPUNIT_TEST_SUITE(test_bs_grid);
     CPPUNIT_TEST(test_constructor);
     CPPUNIT_TEST(test_cell_at);
     CPPUNIT_TEST(test_place_ship);
     CPPUNIT_TEST(test_hit);
+    CPPUNIT_TEST(test_stats);
     CPPUNIT_TEST_SUITE_END();
 
 };
