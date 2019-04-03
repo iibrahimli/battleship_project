@@ -55,6 +55,13 @@ namespace bship{
         SR_HIT,       ///< the shot hit a part of a ship
         SR_SINK       ///< the shot sinked a ship (hit the last standing part of the ship)
     };
+
+
+    /// which phase grid is in
+    enum _grid_state : uint8_t {
+        GS_PLACING,   ///< a player is placing ships, not ready yet
+        GS_READY      ///< the grid is ready for game (all the ships have been placed)
+    };
     
 
     struct cell;
@@ -119,45 +126,45 @@ public:
         @param width Width of the grid (x dimension)
         @param height Height of the grid (y dimension)
     */
-    bs_grid(size_t width, size_t height)
-    :   _width(width),
-        _height(height),
+    bs_grid(size_t width_, size_t height_)
+    :   width(width_),
+        height(height_),
 
         // maximum number of ships (MODIFY if necessary)
-        _max_n_ships({
+        max_n_ships({
             {ST_TWO,   1},
             {ST_THREE, 2},
             {ST_FOUR,  1},
             {ST_FIVE,  1}
         }),
-        _ready(false)
+        state(GS_PLACING)
     {
 
         // there are no ships at the beginning
-        for(auto& tp : _max_n_ships) _n_ships[tp.first] = 0;
+        for(auto& tp : max_n_ships) n_ships[tp.first] = 0;
 
         // allocate memory for the cell array
-        _data = new cell[_width * _height];
+        data = new cell[width * height];
 
     }
 
 
-    /// Destructor frees _data
+    /// Destructor frees data
     ~bs_grid(){
-        delete[] _data;
+        delete[] data;
     }
 
 
     /// Getter for width
-    size_t width() const { return _width; }
+    size_t get_width() const { return width; }
 
 
     /// Getter for height
-    size_t height() const { return _height; }
+    size_t get_height() const { return height; }
 
 
     /// True if all ships have been placed
-    bool is_ready() const { return _ready; }
+    bool is_ready() const { return state == GS_READY; }
 
 
     /*!
@@ -170,11 +177,11 @@ public:
         @return Reference to the requested cell
     */
     inline cell& cell_at(size_t row, size_t col){
-        if(row >= _height || col >= _width)
+        if(row >= height || col >= width)
             throw index_exception(row, col, "Index out of bounds: ");
 
         // row-major order
-        return _data[row*_width + col];
+        return data[row*width + col];
     }
 
 
@@ -193,16 +200,16 @@ public:
     bool place_ship(ship_type type, size_t row, size_t col, ship_orientation orient){
 
         // if board is fully populated, there are no more ships to place
-        if(_ready)
+        if(is_ready())
             throw illegal_move_exception("All ships have already been placed");
 
         // check if ship type TYPE exists
-        if(_n_ships.find(type) == _n_ships.end()){
+        if(n_ships.find(type) == n_ships.end()){
             throw illegal_move_exception("Unknown ship type");
         }
 
         // check if maximum # of ships of type type have already been placed
-        if(_n_ships[type] == _max_n_ships[type]){
+        if(n_ships[type] == max_n_ships[type]){
             throw illegal_move_exception("Ship type has been placed MAX times already");
         }
 
@@ -234,12 +241,12 @@ public:
             cell_at(coord.first, coord.second).state = CS_FULL;
         }
         
-        ++_n_ships[type];
+        ++n_ships[type];
 
         // check all ships and set _ready
         bool rd = true;
-        for(auto& tp : _n_ships)
-            rd = rd && (tp.second == _max_n_ships[tp.first]);
+        for(auto& tp : n_ships)
+            rd = rd && (tp.second == max_n_ships[tp.first]);
 
         return true;
     }
@@ -272,6 +279,7 @@ public:
             cell_at(row, col).state = CS_DESTROYED;
 
             // TODO check if the ship has been sunk
+            
         }
 
         return sr;
@@ -283,15 +291,15 @@ public:
 
 
 private:
-    size_t                        _width;        ///< width of the grid
-    size_t                        _height;       ///< height of the grid
-    cell                         *_data;         ///< actual cells of the grid
-    std::map<ship_type, uint8_t>  _n_ships;      ///< number of ships of each type
-    std::map<ship_type, uint8_t>  _max_n_ships;  ///< maximum number of ships of each type
-    bool                          _ready;        ///< true iff all ships have been placed
-
+    size_t                        width;        ///< width of the grid
+    size_t                        height;       ///< height of the grid
+    cell                         *data;         ///< actual cells of the grid
+    _grid_state                   state;        ///< current state of the grid
+    std::map<ship_type, uint8_t>  n_ships;      ///< number of ships of each type
+    std::map<ship_type, uint8_t>  max_n_ships;  ///< maximum number of ships of each type
+    int                           cur_ship_id;  ///< id of the ship that is being placed
+    
 };
-
 
 
 
@@ -310,13 +318,13 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
 
     // print first line
     os << "┌─";
-    for(size_t i=0; i<grid._width-1; ++i) os << "──┬─";
+    for(size_t i=0; i<grid.width-1; ++i) os << "──┬─";
     os << "──┐" << std::endl;
 
     // print cells
-    for(size_t r=0; r<grid._height; ++r){
+    for(size_t r=0; r<grid.height; ++r){
         os << "│";
-        for(size_t c=0; c<grid._width; ++c){
+        for(size_t c=0; c<grid.width; ++c){
             switch(grid.cell_at(r, c).state){
                 case CS_EMPTY:
                     os << "   ";
@@ -335,24 +343,23 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
         }
         os << std::endl;
 
-        if(r != grid._height-1){
+        if(r != grid.height-1){
             // print separating lines if its not the last row
             os << "├─";
-            for(size_t i=0; i<grid._width-1; ++i) os << "──┼─";
+            for(size_t i=0; i<grid.width-1; ++i) os << "──┼─";
             os << "──┤" << std::endl;
         }
     }
 
     // print last line
     os << "└─";
-    for(size_t i=0; i<grid._width-1; ++i) os << "──┴─";
+    for(size_t i=0; i<grid.width-1; ++i) os << "──┴─";
     os << "──┘" << std::endl;
 
     return os;
 }
 
 #endif
-
 
 
 
@@ -371,13 +378,13 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
 
     // print top line
     os << " ";
-    for(size_t i=0; i<grid._width*3-1; ++i) os << "_";
+    for(size_t i=0; i<grid.width*3-1; ++i) os << "_";
     os << std::endl;
 
     // print cells
-    for(size_t r=0; r<grid._height; ++r){
+    for(size_t r=0; r<grid.height; ++r){
         os << "|";
-        for(size_t c=0; c<grid._width; ++c){
+        for(size_t c=0; c<grid.width; ++c){
             switch(grid.cell_at(r, c).state){
                 case CS_EMPTY:
                     os << "__";

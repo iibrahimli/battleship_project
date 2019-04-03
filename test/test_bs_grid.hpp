@@ -32,7 +32,7 @@ public:
 
     // test ship placement
     void test_place_ship(){
-
+        CPPUNIT_ASSERT(1 == 0);
     }
 
 
