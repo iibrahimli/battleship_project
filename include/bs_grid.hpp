@@ -8,12 +8,13 @@
 
 #include <iostream>
 #include <map>
+#include <unordered_set>
 #include <vector>
 #include <algorithm>
 #include "exceptions.hpp"
 
 
-// for small printing - uncomment for regular ASCII printing
+// for small printing - comment for regular ASCII printing
 #define SMALL_PRINT
 
 
@@ -129,7 +130,6 @@ public:
     bs_grid(size_t width_, size_t height_)
     :   width(width_),
         height(height_),
-
         // maximum number of ships (MODIFY if necessary)
         max_n_ships({
             {ST_TWO,   1},
@@ -140,8 +140,9 @@ public:
         state(GS_PLACING)
     {
 
-        // there are no ships at the beginning
+        // there are no ships at the beginning and id 0 will be placed first
         for(auto& tp : max_n_ships) n_ships[tp.first] = 0;
+        cur_ship_id = 0;
 
         // allocate memory for the cell array
         data = new cell[width * height];
@@ -217,7 +218,7 @@ public:
         std::vector<std::pair<size_t, size_t>> to_place;
         size_t r = row, c = col;
 
-        // loop over the ship length
+        // loop over the ship length and add cells to 
         for(int sz=0; sz<type; ++sz){
 
             try{
@@ -232,6 +233,7 @@ public:
             // if the cell is okay to place, add it to vector
             to_place.push_back({r, c});
 
+            // increment column or row value according to orientation
             if(orient == SO_HOR) ++c;
             else ++r;
         }
@@ -239,14 +241,21 @@ public:
         // place ship
         for(auto& coord : to_place){
             cell_at(coord.first, coord.second).state = CS_FULL;
+            cell_at(coord.first, coord.second).ship_id = cur_ship_id;
+            // TODO: check why this does not work ^^ (ids stay at -1)
         }
         
+        // there is one more ship of type TYPE now
         ++n_ships[type];
 
-        // check all ships and set _ready
+        // next id
+        ++cur_ship_id;
+
+        // check all ships and set state to ready if all ships are placed
         bool rd = true;
         for(auto& tp : n_ships)
             rd = rd && (tp.second == max_n_ships[tp.first]);
+        if(rd) state = GS_READY;
 
         return true;
     }
@@ -279,6 +288,8 @@ public:
             cell_at(row, col).state = CS_DESTROYED;
 
             // TODO check if the ship has been sunk
+
+            hit_ships.insert(cell_at(row, col).ship_id);
             
         }
 
@@ -286,19 +297,20 @@ public:
     }
 
 
-
     friend std::ostream& operator<<(std::ostream& os, bship::bs_grid& grid);
 
 
 private:
+
     size_t                        width;        ///< width of the grid
     size_t                        height;       ///< height of the grid
     cell                         *data;         ///< actual cells of the grid
-    _grid_state                   state;        ///< current state of the grid
+    _grid_state                   state;        ///< current state of the grid (related to game phase)
     std::map<ship_type, uint8_t>  n_ships;      ///< number of ships of each type
     std::map<ship_type, uint8_t>  max_n_ships;  ///< maximum number of ships of each type
-    int                           cur_ship_id;  ///< id of the ship that is being placed
-    
+    int                           cur_ship_id;  ///< id of the ship that is being placed (ids are sequential and start from 0)
+    std::unordered_set<int>       hit_ships;    ///< ids of ships that are currently "injured"  (i. e. hit but not sunk)
+
 };
 
 
@@ -390,7 +402,7 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
                     os << "__";
                     break;
                 case CS_FULL:
-                    os << "██";
+                    os << "█" << grid.cell_at(r, c).ship_id;
                     break;
                 case CS_MISSED:
                     os << "×_";
