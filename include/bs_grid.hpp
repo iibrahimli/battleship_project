@@ -171,8 +171,8 @@ public:
     /*!
         @brief Cell access
 
-        Easy cell access
-        (cells are stored in row-major order)
+        Easy cell access. Throws index_exception if index is out of bounds.
+        Cells are stored in row-major order
 
         @param row, col Coordinates of requested cell
         @return Reference to the requested cell
@@ -186,6 +186,14 @@ public:
     }
 
 
+    /*!
+        @brief Check whether ship has been sunk
+
+        Checks all cells of ship with given id and returns true if all of them have been hit.
+
+        @param ship_id Id of the ship to be checked
+        @return true if ship has been sunk, false otherwise
+    */
     inline bool ship_sunk(int ship_id){
         bool sunk = true;
         for(size_t i=0; i<height; ++i){
