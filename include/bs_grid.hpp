@@ -191,14 +191,14 @@ public:
 
 
     /*!
-        @brief Check whether ship has been sunk
+        @brief Check whether ship has sunk
 
         Checks all cells of ship with given id and returns true if all of them have been hit.
 
         @param ship_id Id of the ship to be checked
         @return true if ship has been sunk, false otherwise
     */
-    inline bool ship_sunk(int ship_id){
+    inline bool ship_sunk(int ship_id) {
         bool sunk = true;
         for(size_t i=0; i<height; ++i){
             for(size_t j=0; j<width; ++j){
