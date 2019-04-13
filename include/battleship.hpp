@@ -6,11 +6,26 @@
 #define BATTLESHIP_HPP
 
 #include "bs_grid.hpp"
+#include "bs_player.hpp"
 #include "exceptions.hpp"
 
 
 namespace bship{
+
     class battleship;
+
+
+    /*!
+        @brief Connect game and its players
+
+        Connects given players and the game. If one of the players
+        is nullptr, only the other one is connected.
+
+        @param game Pointer to the battleship game
+        @param pa, pb Pointers to players A and B
+    */
+    void connect(battleship *game, bs_player *pa, bs_player *pb);
+
 }
 
 
@@ -44,21 +59,44 @@ public:
         pb_hit_grid   (width, height),
         pa_turn(true)
     {
-
+        pa = nullptr;
+        pb = nullptr;
     }
 
 
+    /// Player a setter
+    void set_pa(bs_player *p){ pa = p; }
+
+
+    /// Player b setter
+    void set_pb(bs_player *p){ pb = p; }
+
 
 private:
-    bs_grid    pa_hidden_grid;  ///< player A ship placement grid
-    bs_grid    pa_hit_grid;     ///< player A hit tracking grid
-    bs_grid    pb_hidden_grid;  ///< player B ship placement grid
-    bs_grid    pb_hit_grid;     ///< player B hit tracking grid
-    bs_player  pa;              ///< player A
-    bs_player  pb;              ///< player B
-    bool       pa_turn;         ///< current turn: player A
+
+    bs_grid     pa_hidden_grid;  ///< player A ship placement grid
+    bs_grid     pa_hit_grid;     ///< player A hit tracking grid
+    bs_grid     pb_hidden_grid;  ///< player B ship placement grid
+    bs_grid     pb_hit_grid;     ///< player B hit tracking grid
+    bs_player  *pa;              ///< pointer to player A
+    bs_player  *pb;              ///< pointer to player B
+    bool        pa_turn;         ///< current turn: player A
 
 };
+
+
+
+void bship::connect(battleship *game, bs_player *pa, bs_player *pb){
+    if(!game) return;
+    if(pa){
+        game->set_pa(pa);
+        pa->set_game(game);
+    }
+    if(pb){
+        game->set_pb(pb);
+        pb->set_game(game);
+    }
+}
 
 
 
