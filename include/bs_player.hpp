@@ -12,6 +12,7 @@
 
 
 namespace bship{
+    class battleship;
     class bs_player;
 }
 
