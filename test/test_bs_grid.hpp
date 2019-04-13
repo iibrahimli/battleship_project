@@ -92,23 +92,24 @@ public:
     void test_shoot_at(){
 
         bship::bs_grid grid(6, 8);
+        std::pair<bship::shot_result, int> sr;
 
         // shooting an empty cell
-        auto sr = grid.shoot_at(1, 1);
-        CPPUNIT_ASSERT_EQUAL(bship::SR_MISS, sr.first)
-        CPPUNIT_ASSERT_EQUAL(-1, sr.second)
+        sr = grid.shoot_at(0, 0);
+        CPPUNIT_ASSERT_EQUAL(bship::SR_MISS, sr.first);
+        CPPUNIT_ASSERT_EQUAL(-1, sr.second);
 
         grid.place_ship(bship::ST_TWO, 1, 1, bship::SO_VERT);
 
         // injuring a ship
-        sr = grid.shoot_at(1, 2);
-        CPUNIT_ASSERT_EQUAL(bship::SR_HIT, sr.first);
-        CPUNIT_ASSERT_EQUAL(0, sr.second);
+        sr = grid.shoot_at(2, 1);
+        CPPUNIT_ASSERT_EQUAL(bship::SR_HIT, sr.first);
+        CPPUNIT_ASSERT_EQUAL(0, sr.second);
 
         // sinking a ship
         sr = grid.shoot_at(1, 1);
-        CPUNIT_ASSERT_EQUAL(bship::SR_SINK, sr.first);
-        CPUNIT_ASSERT_EQUAL(0, sr.second);
+        CPPUNIT_ASSERT_EQUAL(bship::SR_SINK, sr.first);
+        CPPUNIT_ASSERT_EQUAL(0, sr.second);
 
         // shooting a previously shot cell
         CPPUNIT_ASSERT_THROW(grid.shoot_at(1, 1), bship::illegal_move_exception);
