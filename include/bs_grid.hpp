@@ -168,7 +168,7 @@ public:
     size_t get_height() const { return height; }
 
 
-    /// True if all ships have been placed
+    /// Returns true if all ships have been placed
     bool is_ready() const { return state == GS_READY; }
 
 
