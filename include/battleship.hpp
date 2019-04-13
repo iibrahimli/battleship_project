@@ -48,7 +48,7 @@ public:
         All of the grids are of the same size. Each players owns 2 of the grids.
         For each player, one of the grid keeps track of their own ships and opponent's hits,
         while the other grid keeps track of player's hits and sunken enemy ships.
-        Starting player becomes player A.
+        Starting player becomes player A. Each turn, the game switches between players
 
         @param width, height Dimensions of the grid
     */
@@ -57,6 +57,7 @@ public:
         pa_hit_grid   (width, height),
         pb_hidden_grid(width, height),
         pb_hit_grid   (width, height),
+        finished(false),
         pa_turn(true)
     {
         pa = nullptr;
@@ -72,6 +73,24 @@ public:
     void set_pb(bs_player *p){ pb = p; }
 
 
+    /*!
+        @brief Place a ship
+
+        Current player places a ship at the given location
+        Arguments are same as bs_grid.place_ship()
+    */
+    bool place_ship()
+
+
+    /// Starts the game, i.e. game will call players until game is finished
+    void start(){
+        while(!finished){
+            pa->move();
+            pb->move();
+        }
+    }
+
+
 private:
 
     bs_grid     pa_hidden_grid;  ///< player A ship placement grid
@@ -80,6 +99,7 @@ private:
     bs_grid     pb_hit_grid;     ///< player B hit tracking grid
     bs_player  *pa;              ///< pointer to player A
     bs_player  *pb;              ///< pointer to player B
+    bool        finished;        ///< game state
     bool        pa_turn;         ///< current turn: player A
 
 };
