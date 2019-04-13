@@ -70,9 +70,13 @@ public:
     /*!
         @brief Makes a move
 
-        
+        Makes a move on its game pointer. This function is overridden
+        in other players (classes derived from this one). By default
+        this class will follow a random policy
     */
-    virtual void move();
+    virtual void move(){
+        // TODO
+    }
 
 
 private:
