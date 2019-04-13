@@ -29,32 +29,57 @@ public:
 
 
     /*!
-        @brief Constructor with grid references
+        @brief Constructor with grid and game pointers
 
-        Constructs a player with given grids. The grids are references
+        Constructs a player with given grids and game. The grids are pointers
         to bs_grid objects inside the relevant game object. Players get
         all game state information through their grids. Players are free
-        to keep track of any additional data they deem useful
+        to keep track of any additional data they deem useful.
+        The game is a pointer to the game on which the player makes moves
 
-        @param hdg, htg Hidden and hit grid references of the player
+        @param hdg, htg Hidden and hit grid pointers of the player
+        @param gm Pointer to the game
     */
-    bs_player(bs_grid& hdg, bs_grid& htg)
+    bs_player(bs_grid* hdg, bs_grid* htg, battleship *gm)
     :   hidden_grid(hdg),
-        hit_grid(htg)
-    {   
+        hit_grid(htg),
+        game(gm)
+    {
     }
 
     bs_player()
-    :   hidden_grid()
+    :   hidden_grid(nullptr),
+        hit_grid(nullptr),
+        game(nullptr)
+    {
+    }
 
 
-    void set_hidden_grid();
+    /// Hidden grid setter
+    void set_hidden_grid(bs_grid *hidden){ hidden_grid = hidden; }
 
+
+    /// Hit grid setter
+    void set_hit_grid(bs_grid *hit){ hit_grid = hit; }
+
+
+    /// Game setter
+    void set_game(battleship *gm){ game = gm; }
+
+
+    /*!
+        @brief Makes a move
+
+        
+    */
+    virtual void move();
 
 
 private:
-    bs_grid&  hidden_grid;  ///< ship placement grid
-    bs_grid&  hit_grid;     ///< hit tracking grid
+ 
+    bs_grid     *hidden_grid;  ///< pointer to ship placement grid
+    bs_grid     *hit_grid;     ///< pointer to hit tracking grid
+    battleship  *game;         ///< pointer to game
 
 };
 
