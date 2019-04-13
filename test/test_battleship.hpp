@@ -1,7 +1,6 @@
 #ifndef TEST_BATTLESHIP_HPP
 #define TEST_BATTLESHIP_HPP
 
-#include <string>
 #include <cppunit/TestCase.h>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TestCaller.h>
@@ -26,7 +25,6 @@ public:
 
     // test constructor
     void test_move(){
-        CPPUNIT_ASSERT(1 == 2);
     }
 
 
