@@ -59,7 +59,7 @@ namespace bship{
 
 
     /// which phase grid is in
-    enum _grid_state : uint8_t {
+    enum grid_state : uint8_t {
         GS_PLACING,   ///< a player is placing ships, not ready yet
         GS_READY      ///< the grid is ready for game (all the ships have been placed)
     };
@@ -139,6 +139,10 @@ public:
         }),
         state(GS_PLACING)
     {
+
+        if(width == 0 || height == 0){
+            throw index_exception(width, height, "Invalid size:");
+        }
 
         // there are no ships at the beginning and id 0 will be placed first
         for(auto& tp : max_n_ships) n_ships[tp.first] = 0;
@@ -225,10 +229,6 @@ public:
     */
     bool place_ship(ship_type type, size_t row, size_t col, ship_orientation orient){
 
-        // if board is fully populated, there are no more ships to place
-        if(is_ready())
-            throw illegal_move_exception("All ships have already been placed");
-
         // check if ship type TYPE exists
         if(n_ships.find(type) == n_ships.end()){
             throw illegal_move_exception("Unknown ship type");
@@ -285,7 +285,6 @@ public:
     }
 
 
-
     /*!
         @brief Shooting
 
@@ -332,7 +331,7 @@ private:
     size_t                        width;        ///< width of the grid
     size_t                        height;       ///< height of the grid
     cell                         *data;         ///< actual cells of the grid
-    _grid_state                   state;        ///< current state of the grid (related to game phase)
+    grid_state                    state;        ///< current state of the grid (related to game phase)
     std::map<ship_type, uint8_t>  n_ships;      ///< number of ships of each type (initialized at runtime)
     std::map<ship_type, uint8_t>  max_n_ships;  ///< maximum number of ships of each type (initialized at runtime)
     int                           cur_ship_id;  ///< id of the ship that is being placed (ids are sequential and start from 0)

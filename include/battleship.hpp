@@ -13,12 +13,14 @@ namespace bship{
     class battleship;
 }
 
+
+
 /*!
     @class battleship
 
     @brief Battleship engine
 
-    The engine of the game, works via an API
+    The engine of a battleship game between 2 players (Player A and Player B)
 */
 class bship::battleship{
 public:
@@ -32,14 +34,25 @@ public:
         @param width, height Dimensions of the grid
     */
     battleship(size_t width, size_t height)
-    :   _grid(width, height)
+    :   pa_hidden_grid(width, height),
+        pa_hit_grid(width, height),
+        pb_hidden_grid(width, height),
+        pb_hit_grid(width, height)
     {
+        
     }
 
+
+
 private:
-    bs_grid _grid;   ///< game grid
+    bs_grid pa_hidden_grid;  ///< player a ship placement grid
+    bs_grid pa_hit_grid;     ///< player a hit tracking grid
+    bs_grid pb_hidden_grid;  ///< player b ship placement grid
+    bs_grid pb_hit_grid;     ///< player b hit tracking grid
+    bool p1_turn;            ///< current turn: player 1
 
 };
+
 
 
 #endif
