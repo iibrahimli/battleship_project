@@ -186,11 +186,28 @@ public:
     }
 
 
+    inline bool ship_sunk(int ship_id){
+        bool sunk = true;
+        for(size_t i=0; i<height; ++i){
+            for(size_t j=0; j<width; ++j){
+                // if there exist at least one cell containing part of ship with given id that has not been destroyed
+                if(cell_at(i, j).ship_id == ship_id && cell_at(i, j).state == CS_FULL)
+                    sunk = false;
+            }
+        }
+        return sunk;
+    }
+
+
     /*!
         @brief Ship placement
 
         Checks provided placement coordinates and places the ship on the board
-        if possible
+        if possible. ATTENTION: If the placement of the ship is impossible due to
+            1) parts of ship being out of bounds of the grid
+            2) parts of ship overlapping with another ship
+        no exceptions are thrown and false is returned. This is done to make writing
+        bots relying on randomness easier (less overhead during possible move search)
 
         @param type Type of ship to be placed (example: ST_TWO)
         @param row, col Coordinates of left- and upper-most (!) cell of the ship
@@ -218,7 +235,7 @@ public:
         std::vector<std::pair<size_t, size_t>> to_place;
         size_t r = row, c = col;
 
-        // loop over the ship length and add cells to 
+        // loop over the ship length and add cells to vector for later placement
         for(int sz=0; sz<type; ++sz){
 
             try{
@@ -242,7 +259,6 @@ public:
         for(auto& coord : to_place){
             cell_at(coord.first, coord.second).state = CS_FULL;
             cell_at(coord.first, coord.second).ship_id = cur_ship_id;
-            // TODO: check why this does not work ^^ (ids stay at -1)
         }
         
         // there is one more ship of type TYPE now
@@ -269,15 +285,16 @@ public:
         Throws an index_exception if the coordinates are out of bounds
 
         @param row, col Coordinates of the cell to be shot at
-        @return The result of the shot (one of HT_MISS, HT_HIT, and HT_SINK)
+        @return The result of the shot (one of HT_MISS, HT_HIT, and HT_SINK) and id of ship sunk (if sunk)
     */
-    shot_result shoot_at(size_t row, size_t col){
+    std::pair<shot_result, int> shoot_at(size_t row, size_t col){
         
         // the move is illegal if the cell has been shot before
         if(!cell_at(row, col).can_shoot())
             throw illegal_move_exception("Cell has been shot before");
 
         shot_result sr;
+        int shot_ship_id = -1;
 
         // change state of the cell depending on previous state
         if(cell_at(row, col).state == CS_EMPTY){
@@ -286,14 +303,16 @@ public:
         }
         else if(cell_at(row, col).state == CS_FULL){
             cell_at(row, col).state = CS_DESTROYED;
+            sr = SR_HIT;
+            shot_ship_id = cell_at(row, col).ship_id;
 
-            // TODO check if the ship has been sunk
-
-            hit_ships.insert(cell_at(row, col).ship_id);
-            
+            // if ship is sunk
+            if(ship_sunk(shot_ship_id)){
+                sr = SR_SINK;
+            }
         }
 
-        return sr;
+        return {sr, shot_ship_id};
     }
 
 
@@ -306,10 +325,9 @@ private:
     size_t                        height;       ///< height of the grid
     cell                         *data;         ///< actual cells of the grid
     _grid_state                   state;        ///< current state of the grid (related to game phase)
-    std::map<ship_type, uint8_t>  n_ships;      ///< number of ships of each type
-    std::map<ship_type, uint8_t>  max_n_ships;  ///< maximum number of ships of each type
+    std::map<ship_type, uint8_t>  n_ships;      ///< number of ships of each type (initialized at runtime)
+    std::map<ship_type, uint8_t>  max_n_ships;  ///< maximum number of ships of each type (initialized at runtime)
     int                           cur_ship_id;  ///< id of the ship that is being placed (ids are sequential and start from 0)
-    std::unordered_set<int>       hit_ships;    ///< ids of ships that are currently "injured"  (i. e. hit but not sunk)
 
 };
 
@@ -402,7 +420,8 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
                     os << "__";
                     break;
                 case CS_FULL:
-                    os << "█" << grid.cell_at(r, c).ship_id;
+                    // os << "██";
+                    os << "_" << grid.cell_at(r, c).ship_id;
                     break;
                 case CS_MISSED:
                     os << "×_";
