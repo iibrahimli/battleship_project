@@ -20,30 +20,105 @@ public:
 
     // test constructor
     void test_constructor(){
+
+        // invalid size
+        CPPUNIT_ASSERT_THROW(bship::bs_grid g(0, 10), bship::index_exception);
+
+        // valid size
+        CPPUNIT_ASSERT_NO_THROW(bship::bs_grid g(10, 10));
+
+        bship::bs_grid grid(10, 10);
+
+        // width and height tests
+        CPPUNIT_ASSERT_EQUAL(10ul, grid.get_width());
+        CPPUNIT_ASSERT_EQUAL(10ul, grid.get_height());
         
+        // cells are initialized with ship id -1
+        CPPUNIT_ASSERT_EQUAL(-1, grid.cell_at(0, 0).ship_id);
+        
+        // an empty grid is not ready
+        CPPUNIT_ASSERT_EQUAL(false, grid.is_ready());
+
     }
 
 
     // test cell adressing
     void test_cell_at(){
+
+        bship::bs_grid grid(10, 10);
+
+        // out-of-bounds indices
+        CPPUNIT_ASSERT_THROW(grid.cell_at(10, 11), bship::index_exception);
+        CPPUNIT_ASSERT_THROW(grid.cell_at(-1, 0), bship::index_exception);
+
+        // cells are initialized with empty state
+        CPPUNIT_ASSERT_EQUAL(bship::CS_EMPTY, grid.cell_at(5, 3).state);
         
+        // indexing and setting a value
+        grid.cell_at(1, 0).state = bship::CS_MISSED;
+        CPPUNIT_ASSERT_EQUAL(bship::CS_MISSED, grid.cell_at(1, 0).state);
+
     }
 
 
     // test ship placement
     void test_place_ship(){
-        CPPUNIT_ASSERT(1 == 0);
+
+        bship::bs_grid grid(10, 10);
+
+        // correct placement
+        grid.place_ship(bship::ST_FIVE, 4, 5, bship::SO_VERT);
+        CPPUNIT_ASSERT_EQUAL(bship::CS_FULL, grid.cell_at(7, 5).state);
+
+        // return value of correct placement
+        CPPUNIT_ASSERT_EQUAL(true, grid.place_ship(bship::ST_TWO, 0, 6, bship::SO_HOR));
+
+        // no exceptions during correct placement
+        CPPUNIT_ASSERT_NO_THROW(grid.place_ship(bship::ST_FOUR, 9, 0, bship::SO_HOR));
+
+        // return value of overlapping placement
+        CPPUNIT_ASSERT_EQUAL(false, grid.place_ship(bship::ST_THREE, 9, 2, bship::SO_HOR));
+
+        // return value of out-of-bounds placement
+        CPPUNIT_ASSERT_EQUAL(false, grid.place_ship(bship::ST_THREE, 10, 2, bship::SO_HOR));
+
+        // placing a ship second time
+        CPPUNIT_ASSERT_THROW(grid.place_ship(bship::ST_FIVE, 4, 9, bship::SO_VERT), bship::illegal_move_exception);
+
     }
 
 
     // test targeting and hits
-    void test_hit(){
+    void test_shoot_at(){
 
-    }
+        bship::bs_grid grid(6, 8);
 
+        // shooting an empty cell
+        auto sr = grid.shoot_at(1, 1);
+        CPPUNIT_ASSERT_EQUAL(bship::SR_MISS, sr.first)
+        CPPUNIT_ASSERT_EQUAL(-1, sr.second)
 
-    // test stats (# of ships, # of shots etc)
-    void test_stats(){
+        grid.place_ship(bship::ST_TWO, 1, 1, bship::SO_VERT);
+
+        // injuring a ship
+        sr = grid.shoot_at(1, 2);
+        CPUNIT_ASSERT_EQUAL(bship::SR_HIT, sr.first);
+        CPUNIT_ASSERT_EQUAL(0, sr.second);
+
+        // sinking a ship
+        sr = grid.shoot_at(1, 1);
+        CPUNIT_ASSERT_EQUAL(bship::SR_SINK, sr.first);
+        CPUNIT_ASSERT_EQUAL(0, sr.second);
+
+        // shooting a previously shot cell
+        CPPUNIT_ASSERT_THROW(grid.shoot_at(1, 1), bship::illegal_move_exception);
+
+        // making sure no exceptions are thrown
+        CPPUNIT_ASSERT_NO_THROW(grid.shoot_at(5, 1));
+
+        // shooting invalid index
+        CPPUNIT_ASSERT_THROW(grid.shoot_at(-1, 1), bship::index_exception);
+        CPPUNIT_ASSERT_THROW(grid.shoot_at(1, 8), bship::index_exception);
 
     }
 
@@ -52,8 +127,7 @@ public:
     CPPUNIT_TEST(test_constructor);
     CPPUNIT_TEST(test_cell_at);
     CPPUNIT_TEST(test_place_ship);
-    CPPUNIT_TEST(test_hit);
-    CPPUNIT_TEST(test_stats);
+    CPPUNIT_TEST(test_shoot_at);
     CPPUNIT_TEST_SUITE_END();
 
 };
