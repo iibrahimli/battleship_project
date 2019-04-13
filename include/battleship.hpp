@@ -79,7 +79,7 @@ public:
         Current player places a ship at the given location
         Arguments are same as bs_grid.place_ship()
     */
-    bool place_ship()
+    bool place_ship(){}
 
 
     /// Starts the game, i.e. game will call players until game is finished
