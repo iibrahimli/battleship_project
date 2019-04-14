@@ -48,12 +48,18 @@ public:
     {
     }
 
+
+    /// Default constructor initializes everything to nullptr
     bs_player()
     :   hidden_grid(nullptr),
         hit_grid(nullptr),
         game(nullptr)
     {
     }
+
+
+    /// Base class destructor must be virtual
+    virtual ~bs_player() {}
 
 
     /// Hidden grid setter
