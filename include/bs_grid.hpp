@@ -297,6 +297,7 @@ public:
     std::pair<shot_result, int> shoot_at(size_t row, size_t col){
         
         // the move is illegal if the cell has been shot before
+        // cell_at() may also throw index_exception
         if(!cell_at(row, col).can_shoot())
             throw illegal_move_exception("Cell has been shot before");
 
