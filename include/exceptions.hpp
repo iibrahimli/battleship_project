@@ -106,7 +106,7 @@ public:
 
         @param msg Custom message (default: "Illegal move")
     */
-    illegal_move_exception(const char* msg = "Illegal move")
+    explicit illegal_move_exception(const char* msg = "Illegal move")
     :   _msg(std::string("Illegal move exception: ") + msg)
     {}
 
