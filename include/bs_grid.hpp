@@ -198,16 +198,35 @@ public:
         @param ship_id Id of the ship to be checked
         @return true if ship has been sunk, false otherwise
     */
-    inline bool ship_sunk(int ship_id) {
-        bool sunk = true;
+    inline bool ship_sunk(int ship_id){
         for(size_t i=0; i<height; ++i){
             for(size_t j=0; j<width; ++j){
-                // if there exist at least one cell containing part of ship with given id that has not been destroyed
+                // if there exists at least one cell containing part of ship with given id that has not been destroyed
                 if(cell_at(i, j).ship_id == ship_id && cell_at(i, j).state == CS_FULL)
-                    sunk = false;
+                    return false;
             }
         }
-        return sunk;
+        return true;
+    }
+
+
+    /*!
+        @brief Check whether all the ships have been destroyed
+
+        Checks all cells of all ships and returns true if all of them have been hit.
+
+        @return true if all the ships have been sunk, false otherwise
+    */
+    inline bool all_ships_sunk(){
+        // check all populated cells, and if any of them is not hit, return false
+        for(size_t i=0; i<height; ++i){
+            for(size_t j=0; j<width; ++j){
+                if(cell_at(i, j).state == CS_FULL)
+                    return false;
+            }
+        }
+
+        return true;
     }
 
 
