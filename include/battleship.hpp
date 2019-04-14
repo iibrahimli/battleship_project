@@ -58,7 +58,8 @@ public:
         pb_hidden_grid(width, height),
         pb_hit_grid   (width, height),
         finished(false),
-        pa_turn(true)
+        pa_turn(true),
+        pa_won(false)
     {
         pa = nullptr;
         pb = nullptr;
@@ -137,6 +138,7 @@ public:
     void start(){
         while(!finished){
             pa->move();
+            if(finished) break;
             pb->move();
         }
     }
@@ -152,6 +154,7 @@ private:
     bs_player  *pb;              ///< pointer to player B
     bool        finished;        ///< game state
     bool        pa_turn;         ///< current turn: player A
+    bool        pa_won;          ///< true if player A has won, false otherwise. only relevant if game is finished
 
 };
 
