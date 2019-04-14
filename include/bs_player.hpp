@@ -59,7 +59,7 @@ public:
 
 
     /// Base class destructor must be virtual
-    virtual ~bs_player() {}
+    virtual ~bs_player();
 
 
     /// Hidden grid setter
