@@ -23,14 +23,35 @@ public:
     }
 
 
-    // test constructor
+    // test move
     void test_move(){
+    }
+
+
+    // test finished game detection
+    void test_game_finished(){
+
+    }
+
+
+    // test connecting game and players
+    void test_connect(){
+
+    }
+
+
+    // test winner
+    void test_winner(){
+
     }
 
 
     CPPUNIT_TEST_SUITE(test_battleship);
     CPPUNIT_TEST(test_constructor);
     CPPUNIT_TEST(test_move);
+    CPPUNIT_TEST(test_game_finished);
+    CPPUNIT_TEST(test_connect);
+    CPPUNIT_TEST(test_winner);
     CPPUNIT_TEST_SUITE_END();
 
 };
