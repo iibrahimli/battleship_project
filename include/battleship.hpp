@@ -135,6 +135,11 @@ public:
         // set appropriate state on current player's hit grid based on result
         player_hit_grid->cell_at(row, col).state = (res.first == SR_MISS) ? CS_MISSED : CS_DESTROYED;
 
+        // if the hit ship was the last one
+        if(res.first == SR_SINK && opponent_hidden_grid->get_num_alive_ships() == 0){
+            finished = true;
+        }
+
         // next player moves if current player misses
         if(res.first == SR_MISS) pa_turn = !pa_turn;
 
@@ -148,6 +153,12 @@ public:
             pa->move();
             if(finished) break;
             pb->move();
+        }
+        if(pa_won){
+            std::cout << "Player A won" << std::endl;
+        }
+        else{
+            std::cout << "Player B won" << std::endl;
         }
     }
 
