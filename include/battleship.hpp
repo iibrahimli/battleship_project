@@ -58,6 +58,7 @@ public:
         pb_hidden_grid(width, height),
         pb_hit_grid   (width, height),
         finished(false),
+        ships_placed(false),
         pa_turn(true),
         pa_won(false)
     {
@@ -93,10 +94,14 @@ public:
 
         // place the ship on current player's hidden grid
         // may throw illegal_move_exception
-        if(pa_turn)
+        if(pa_turn){
             res = pa_hidden_grid.place_ship(type, row, col, orient);
-        else
+            if(pa_hidden_grid.is_ready()) ships_placed = true;
+        }
+        else{
             res = pb_hidden_grid.place_ship(type, row, col, orient);
+            if(pb_hidden_grid.is_ready()) ships_placed = true;
+        }
 
         // go to next turn if this turn was successful
         if(res) pa_turn = !pa_turn;
@@ -130,6 +135,9 @@ public:
         // set appropriate state on current player's hit grid based on result
         player_hit_grid->cell_at(row, col).state = (res.first == SR_MISS) ? CS_MISSED : CS_DESTROYED;
 
+        // next player moves if current player misses
+        if(res.first == SR_MISS) pa_turn = !pa_turn;
+
         return res;
     }
 
@@ -153,6 +161,7 @@ private:
     bs_player  *pa;              ///< pointer to player A
     bs_player  *pb;              ///< pointer to player B
     bool        finished;        ///< game state
+    bool        ships_placed;    ///< all the ships have been placed, game is commenced
     bool        pa_turn;         ///< current turn: player A
     bool        pa_won;          ///< true if player A has won, false otherwise. only relevant if game is finished
 
