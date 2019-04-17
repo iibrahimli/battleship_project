@@ -137,7 +137,8 @@ public:
             {ST_FOUR,  1},
             {ST_FIVE,  1}
         }),
-        state(GS_PLACING)
+        state(GS_PLACING),
+        alive_ships(0)
     {
 
         if(width == 0 || height == 0){
@@ -290,6 +291,7 @@ public:
         
         // there is one more ship of type TYPE now
         ++n_ships[type];
+        ++alive_ships;
 
         // next id
         ++cur_ship_id;
@@ -336,6 +338,7 @@ public:
             // if ship is sunk
             if(ship_sunk(shot_ship_id)){
                 sr = SR_SINK;
+                --alive_ships;
             }
         }
 
@@ -354,6 +357,7 @@ private:
     grid_state                    state;        ///< current state of the grid (related to game phase)
     std::map<ship_type, uint8_t>  n_ships;      ///< number of ships of each type (initialized at runtime)
     std::map<ship_type, uint8_t>  max_n_ships;  ///< maximum number of ships of each type (initialized at runtime)
+    int                           alive_ships;  ///< number of alive ships
     int                           cur_ship_id;  ///< id of the ship that is being placed (ids are sequential and start from 0)
 
 };
