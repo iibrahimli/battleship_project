@@ -14,7 +14,7 @@
 #include "exceptions.hpp"
 
 
-// for small printing - comment for regular ASCII printing
+// for small printing - comment for ASCII table printing
 #define SMALL_PRINT
 
 
@@ -171,6 +171,14 @@ public:
 
     /// Returns true if all ships have been placed
     bool is_ready() const { return state == GS_READY; }
+
+
+    /// Returns the number of alive ships on the grid
+    int get_num_alive_ships() const { return alive_ships; }
+
+
+    /// Returns map of ship number per type
+    std::map<ship_type, uint8_t> get_n_ships() const { return n_ships; }
 
 
     /*!
@@ -344,7 +352,7 @@ public:
 
         return {sr, shot_ship_id};
     }
-
+    
 
     friend std::ostream& operator<<(std::ostream& os, bship::bs_grid& grid);
 
@@ -377,13 +385,24 @@ private:
 */
 std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
 
+    // print top numbers
+    os << "   ";
+    for(size_t i=0; i<grid.width*3-1; ++i){
+        if((i+2) % 3 == 0)
+            os << i / 3 << " ";
+        else
+            os << " ";
+    }
+    os << std::endl;
+
     // print first line
-    os << "┌─";
+    os << "  ┌─";
     for(size_t i=0; i<grid.width-1; ++i) os << "──┬─";
     os << "──┐" << std::endl;
 
     // print cells
     for(size_t r=0; r<grid.height; ++r){
+        os << r << " ";
         os << "│";
         for(size_t c=0; c<grid.width; ++c){
             switch(grid.cell_at(r, c).state){
@@ -406,14 +425,14 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
 
         if(r != grid.height-1){
             // print separating lines if its not the last row
-            os << "├─";
+            os << "  ├─";
             for(size_t i=0; i<grid.width-1; ++i) os << "──┼─";
             os << "──┤" << std::endl;
         }
     }
 
     // print last line
-    os << "└─";
+    os << "  └─";
     for(size_t i=0; i<grid.width-1; ++i) os << "──┴─";
     os << "──┘" << std::endl;
 
@@ -437,13 +456,24 @@ std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
 */
 std::ostream& bship::operator<<(std::ostream& os, bship::bs_grid& grid){
 
+    // print top numbers
+    os << "  ";
+    for(size_t i=0; i<grid.width*3-1; ++i){
+        if((i+2) % 3 == 0)
+            os << i / 3;
+        else
+            os << " ";
+    }
+    os << std::endl;
+
     // print top line
-    os << " ";
+    os << "   ";
     for(size_t i=0; i<grid.width*3-1; ++i) os << "_";
     os << std::endl;
 
     // print cells
     for(size_t r=0; r<grid.height; ++r){
+        os << r << " ";
         os << "|";
         for(size_t c=0; c<grid.width; ++c){
             switch(grid.cell_at(r, c).state){
