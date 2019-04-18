@@ -181,6 +181,10 @@ public:
     std::map<ship_type, uint8_t> get_n_ships() const { return n_ships; }
 
 
+    /// Returns map of maximum ships per type
+    std::map<ship_type, uint8_t> get_max_n_ships() const { return max_n_ships; }
+
+
     /*!
         @brief Cell access
 
