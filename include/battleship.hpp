@@ -67,12 +67,24 @@ public:
     }
 
 
+    /// Player a getter
+    bs_player * get_pa(){ return pa; }
+
+
+    /// Player b getter
+    bs_player * get_pb(){ return pb; }
+
+
     /// Player a setter
     void set_pa(bs_player *p){ pa = p; }
 
 
     /// Player b setter
     void set_pb(bs_player *p){ pb = p; }
+
+
+    /// returns the pointer to winner
+    bs_player * get_winner(){ return (!finished) ? nullptr : (pa_won) ? pa : pb; }
 
 
     /*!
@@ -114,7 +126,7 @@ public:
         @brief Shoot
 
         Current player shoots at the given location
-        Arguments are same as bs_grid::shoot_at(). Does not 
+        Arguments are same as bs_grid::shoot_at(). Does not
         catch any exceptions thrown by bs_grid::shoot_at()
 
         @param row, col Coordinates of the cell to be shot at
