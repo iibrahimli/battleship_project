@@ -15,7 +15,7 @@ class test_bs_grid : public CppUnit::TestCase{
 
 public:
 
-    test_bs_grid() {}
+    test_bs_grid(){}
 
 
     // test constructor
@@ -69,21 +69,25 @@ public:
         // correct placement
         grid.place_ship(bship::ST_FIVE, 4, 5, bship::SO_VERT);
         CPPUNIT_ASSERT_EQUAL(bship::CS_FULL, grid.cell_at(7, 5).state);
+        CPPUNIT_ASSERT_EQUAL(1, grid.get_num_alive_ships());
 
         // return value of correct placement
         CPPUNIT_ASSERT_EQUAL(true, grid.place_ship(bship::ST_TWO, 0, 6, bship::SO_HOR));
 
         // no exceptions during correct placement
         CPPUNIT_ASSERT_NO_THROW(grid.place_ship(bship::ST_FOUR, 9, 0, bship::SO_HOR));
+        CPPUNIT_ASSERT_EQUAL(3, grid.get_num_alive_ships());
 
         // return value of overlapping placement
         CPPUNIT_ASSERT_EQUAL(false, grid.place_ship(bship::ST_THREE, 9, 2, bship::SO_HOR));
 
         // return value of out-of-bounds placement
         CPPUNIT_ASSERT_EQUAL(false, grid.place_ship(bship::ST_THREE, 10, 2, bship::SO_HOR));
+        CPPUNIT_ASSERT_EQUAL(3, grid.get_num_alive_ships());
 
         // placing a ship second time
         CPPUNIT_ASSERT_THROW(grid.place_ship(bship::ST_FIVE, 4, 9, bship::SO_VERT), bship::illegal_move_exception);
+        CPPUNIT_ASSERT_EQUAL(3, grid.get_num_alive_ships());
 
     }
 
@@ -91,7 +95,7 @@ public:
     // test targeting and hits
     void test_shoot_at(){
 
-        bship::bs_grid grid(6, 8);
+        bship::bs_grid grid(10, 8);
         std::pair<bship::shot_result, int> sr;
 
         // shooting an empty cell
@@ -99,17 +103,30 @@ public:
         CPPUNIT_ASSERT_EQUAL(bship::SR_MISS, sr.first);
         CPPUNIT_ASSERT_EQUAL(-1, sr.second);
 
-        grid.place_ship(bship::ST_TWO, 1, 1, bship::SO_VERT);
+        grid.place_ship(bship::ST_THREE, 1, 1, bship::SO_VERT);
+        CPPUNIT_ASSERT_EQUAL(1, grid.get_num_alive_ships());
 
         // injuring a ship
         sr = grid.shoot_at(2, 1);
         CPPUNIT_ASSERT_EQUAL(bship::SR_HIT, sr.first);
         CPPUNIT_ASSERT_EQUAL(0, sr.second);
+        CPPUNIT_ASSERT_EQUAL(1, grid.get_num_alive_ships());
 
         // sinking a ship
+        sr = grid.shoot_at(3, 1);
         sr = grid.shoot_at(1, 1);
         CPPUNIT_ASSERT_EQUAL(bship::SR_SINK, sr.first);
         CPPUNIT_ASSERT_EQUAL(0, sr.second);
+        CPPUNIT_ASSERT_EQUAL(0, grid.get_num_alive_ships());
+
+        // checking return ship id value of ships placed after a hit
+        grid.place_ship(bship::ST_TWO, 7, 5, bship::SO_VERT);
+        sr = grid.shoot_at(7, 5);
+        sr = grid.shoot_at(8, 5);
+        CPPUNIT_ASSERT_EQUAL(bship::SR_SINK, sr.first);
+        CPPUNIT_ASSERT_EQUAL(1, sr.second);
+        CPPUNIT_ASSERT_EQUAL(0, grid.get_num_alive_ships());
+        CPPUNIT_ASSERT_EQUAL(0, (int) grid.get_n_ships()[bship::ST_TWO]);
 
         // shooting a previously shot cell
         CPPUNIT_ASSERT_THROW(grid.shoot_at(1, 1), bship::illegal_move_exception);
