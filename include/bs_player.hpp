@@ -41,8 +41,9 @@ public:
         @param hdg, htg Hidden and hit grid pointers of the player
         @param gm Pointer to the game
     */
-    bs_player(bs_grid* hdg, bs_grid* htg, battleship *gm)
-    :   hidden_grid(hdg),
+    bs_player(std::string n, bs_grid* hdg, bs_grid* htg, battleship *gm)
+    :   name(n),
+        hidden_grid(hdg),
         hit_grid(htg),
         game(gm)
     {
@@ -51,7 +52,8 @@ public:
 
     /// Default constructor initializes everything to nullptr
     bs_player()
-    :   hidden_grid(nullptr),
+    :   name("<Unknown>"),
+        hidden_grid(nullptr),
         hit_grid(nullptr),
         game(nullptr)
     {
@@ -60,6 +62,14 @@ public:
 
     /// Base class destructor must be virtual
     virtual ~bs_player();
+
+
+    /// Get name
+    std::string get_name(){ return name; }
+
+
+    /// Set name
+    void set_name(std::string n){ name = n; }
 
 
     /// Hidden grid setter
@@ -82,12 +92,13 @@ public:
         this class will follow a random policy
     */
     virtual void move(){
-        // TODO
+        // TODO random moves
     }
 
 
 private:
- 
+
+    std::string  name;         ///< name of the player
     bs_grid     *hidden_grid;  ///< pointer to ship placement grid
     bs_grid     *hit_grid;     ///< pointer to hit tracking grid
     battleship  *game;         ///< pointer to game
