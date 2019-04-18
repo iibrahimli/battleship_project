@@ -166,12 +166,6 @@ public:
             if(finished) break;
             pb->move();
         }
-        if(pa_won){
-            std::cout << "Player A won" << std::endl;
-        }
-        else{
-            std::cout << "Player B won" << std::endl;
-        }
     }
 
 
