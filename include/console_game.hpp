@@ -11,7 +11,9 @@
 
 
 namespace bship{
+
     class console_game;
+
 
     /*!
         @brief Print 2 grids side by side
@@ -20,7 +22,7 @@ namespace bship{
 
         @param g1, g2 Grids to be printed
     */
-    void print_grids(bship::bs_grid g1, bship::bs_grid g2);
+    void print_grids(bship::bs_grid g1, bship::bs_grid g2); 
 
 }
 
