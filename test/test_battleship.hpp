@@ -14,7 +14,7 @@ class test_battleship : public CppUnit::TestCase{
 
 public:
 
-    test_battleship() {}
+    test_battleship(){}
 
 
     // test constructor
@@ -40,18 +40,12 @@ public:
     }
 
 
-    // test winner
-    void test_winner(){
-
-    }
-
 
     CPPUNIT_TEST_SUITE(test_battleship);
     CPPUNIT_TEST(test_constructor);
     CPPUNIT_TEST(test_move);
     CPPUNIT_TEST(test_game_finished);
     CPPUNIT_TEST(test_connect);
-    CPPUNIT_TEST(test_winner);
     CPPUNIT_TEST_SUITE_END();
 
 };

@@ -12,8 +12,10 @@
 
 
 namespace bship{
-    class battleship;
     class bs_player;
+
+    class battleship;
+
 }
 
 
@@ -41,13 +43,12 @@ public:
         @param hdg, htg Hidden and hit grid pointers of the player
         @param gm Pointer to the game
     */
-    bs_player(std::string n, bs_grid* hdg, bs_grid* htg, battleship *gm)
+    bs_player(std::string& n, bs_grid* hdg, bs_grid* htg, battleship *gm)
     :   name(n),
         hidden_grid(hdg),
         hit_grid(htg),
         game(gm)
-    {
-    }
+    {}
 
 
     /// Default constructor initializes everything to nullptr
@@ -56,8 +57,7 @@ public:
         hidden_grid(nullptr),
         hit_grid(nullptr),
         game(nullptr)
-    {
-    }
+    {}
 
 
     /// Base class destructor must be virtual
@@ -69,7 +69,7 @@ public:
 
 
     /// Set name
-    void set_name(std::string n){ name = n; }
+    void set_name(std::string& n){ name = n; }
 
 
     /// Hidden grid setter
@@ -92,6 +92,12 @@ public:
         this class will follow a random policy
     */
     virtual void move(){
+
+        if(game == nullptr || hidden_grid == nullptr || hit_grid == nullptr){
+            std::cout << "Can't move on a nullptr {game, hidden_grid, hit_grid}" << std::endl;
+            return;
+        }
+
         int r, c;
         std::pair<shot_result, int> sr;
         bool valid_move = false;
@@ -122,7 +128,7 @@ public:
             while(!valid_move){
                 r = rand() % hit_grid->get_height();
                 c = rand() % hit_grid->get_width();
-                ori = rand() % 2 ? SO_HOR : SO_VERT;                
+                ori = (rand() % 2) ? SO_HOR : SO_VERT;                
 
                 try{
                     // TODO

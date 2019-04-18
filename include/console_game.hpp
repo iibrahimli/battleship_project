@@ -21,6 +21,7 @@ namespace bship{
         @param g1, g2 Grids to be printed
     */
     void print_grids(bship::bs_grid g1, bship::bs_grid g2);
+
 }
 
 
@@ -67,7 +68,7 @@ public:
         game->start();
 
         // the game will handle moves until the end
-        
+        std::cout << game->get_winner()->get_name() << " won" << std::endl;
     }
 
 

@@ -14,6 +14,8 @@ namespace bship{
 
     class battleship;
 
+    class bs_player;
+
 
     /*!
         @brief Connect game and its players
