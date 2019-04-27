@@ -5,7 +5,7 @@ namespace bship{
 
 
 
-battleship::battleship(size_t width, size_t height, bool verb)
+battleship::battleship(size_t width, size_t height, output_mode om)
 :   pa_hidden_grid(width, height),
     pa_hit_grid   (width, height),
     pb_hidden_grid(width, height),
@@ -15,7 +15,7 @@ battleship::battleship(size_t width, size_t height, bool verb)
     ships_placed(false),
     pa_turn(true),
     pa_won(false),
-    verbose(verb)
+    output(om)
 {
     pa = nullptr;
     pb = nullptr;
@@ -56,7 +56,7 @@ bool battleship::place_ship(ship_type type, size_t row, size_t col, ship_orienta
 
     // go to next turn if this turn was successful
     if(res){
-        if(verbose){
+        if(output == OM_BOTH){
             std::string pl = (pa_turn) ? pa->get_name() : pb->get_name();
             std::cout << pl << " placed a " << (int) type << "-cell ship at (" << row << ", " << col << ") ";
             std::cout << ((orient == SO_HOR) ? "horizontally" : "vertically");
@@ -65,7 +65,7 @@ bool battleship::place_ship(ship_type type, size_t row, size_t col, ship_orienta
         pa_turn = !pa_turn;
     }
     else{
-        if(verbose){
+        if(output == OM_BOTH){
             std::string pl = (pa_turn) ? pa->get_name() : pb->get_name();
             std::cout << pl << " tried to place a " << (int) type << "-cell ship at (" << row << ", " << col << ") ";
             std::cout << ((orient == SO_HOR) ? "horizontally" : "vertically");
@@ -100,7 +100,7 @@ std::pair<shot_result, int> battleship::shoot_at(size_t row, size_t col){
     // next player moves if current player misses
     if(res.first == SR_MISS) pa_turn = !pa_turn;
 
-    if(verbose){
+    if(output == OM_BOTH){
         std::string pl = (pa_turn) ? pa->get_name() : pb->get_name();
         std::cout << pl << " shot cell (" << row << ", " << col << "): ";
         if(res.first == SR_MISS) std::cout << "MISS";

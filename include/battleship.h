@@ -62,7 +62,7 @@ public:
 
         @param width, height Dimensions of the grid
     */
-    battleship(size_t width, size_t height, bool verb=false);
+    battleship(size_t width, size_t height, output_mode om=OM_SILENT);
 
 
     /// Player a getter
@@ -140,7 +140,7 @@ private:
     bool          pa_turn;         ///< current turn: player A
     bool          pa_won;          ///< true if player A has won, false otherwise. only relevant if game is finished
     output_mode   output;          ///< game verbosity
-    
+
 };
 
 
