@@ -82,6 +82,9 @@ public:
     virtual void move();
 
 
+    friend void connect(battleship *game, bs_player *pa, bs_player *pb);    
+
+
 private:
 
     std::string  name;         ///< name of the player

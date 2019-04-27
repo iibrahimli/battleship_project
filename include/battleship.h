@@ -54,7 +54,7 @@ public:
 
         @param width, height Dimensions of the grid
     */
-    battleship(size_t width, size_t height);
+    battleship(size_t width, size_t height, bool verb=false);
 
 
     /// Player a getter
@@ -111,6 +111,9 @@ public:
     void start();
 
 
+    friend void connect(battleship *game, bs_player *pa, bs_player *pb);
+
+
 private:
 
     bs_grid     pa_hidden_grid;  ///< player A ship placement grid
@@ -123,6 +126,7 @@ private:
     bool        ships_placed;    ///< all the ships have been placed, game is commenced
     bool        pa_turn;         ///< current turn: player A
     bool        pa_won;          ///< true if player A has won, false otherwise. only relevant if game is finished
+    bool        verbose;         ///< if true, game will print moves to stdout
 
 };
 

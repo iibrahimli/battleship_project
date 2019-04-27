@@ -2,7 +2,8 @@
 
 namespace bship{
 
-battleship::battleship(size_t width, size_t height)
+
+battleship::battleship(size_t width, size_t height, bool verb)
 :   pa_hidden_grid(width, height),
     pa_hit_grid   (width, height),
     pb_hidden_grid(width, height),
@@ -10,7 +11,8 @@ battleship::battleship(size_t width, size_t height)
     finished(false),
     ships_placed(false),
     pa_turn(true),
-    pa_won(false)
+    pa_won(false),
+    verbose(verb)
 {
     pa = nullptr;
     pb = nullptr;
@@ -47,7 +49,15 @@ bool battleship::place_ship(ship_type type, size_t row, size_t col, ship_orienta
     }
 
     // go to next turn if this turn was successful
-    if(res) pa_turn = !pa_turn;
+    if(res){
+        if(verbose){
+            std::string pl = (pa_turn) ? pa->get_name() : pb->get_name();
+            std::cout << pl << " placed a " << (int) type << "-cell ship at (" << row << ", " << col << ") ";
+            std::cout << (orient == SO_HOR) ? "horizontally" : "vertically";
+            std::cout << std::endl;
+        }
+        pa_turn = !pa_turn;
+    }
 
     return res;
 }
@@ -76,6 +86,15 @@ std::pair<shot_result, int> battleship::shoot_at(size_t row, size_t col){
     // next player moves if current player misses
     if(res.first == SR_MISS) pa_turn = !pa_turn;
 
+    if(verbose){
+        std::string pl = (pa_turn) ? pa->get_name() : pb->get_name();
+        std::cout << pl << " shot cell (" << row << ", " << col << "): ";
+        if(res.first == SR_MISS) std::cout << "MISS";
+        else if(res.first == SR_HIT) std::cout << "HIT [" << res.second << "]";
+        else std::cout << "SANK [" << res.second << "]";
+        std::cout << std::endl;
+    }
+
     return res;
 }
 
@@ -89,16 +108,24 @@ void battleship::start(){
 }
 
 
-void connect(battleship *game, bs_player *pa, bs_player *pb){
-    if(!game) return;
+void connect(battleship *gm, bs_player *pa, bs_player *pb){
+    if(!gm) return;
     if(pa){
-        game->set_pa(pa);
-        pa->set_game(game);
+        gm->set_pa(pa);
+        pa->set_game(gm);
+        pa->set_hidden_grid(&(gm->pa_hidden_grid));
+        pa->set_hit_grid(&(gm->pa_hit_grid));
     }
     if(pb){
-        game->set_pb(pb);
-        pb->set_game(game);
+        gm->set_pb(pb);
+        pb->set_game(gm);
+        pb->set_hidden_grid(&(gm->pb_hidden_grid));
+        pb->set_hit_grid(&(gm->pb_hit_grid));
     }
+
+    std::cout << "pa: game=" << pa->game << ", hidden=" << pa->hidden_grid << ", hit=" << pa->hit_grid << std::endl;
+    std::cout << "pb: game=" << pb->game << ", hidden=" << pb->hidden_grid << ", hit=" << pb->hit_grid << std::endl;
+
 }
 
 

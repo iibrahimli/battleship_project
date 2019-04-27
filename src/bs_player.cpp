@@ -41,7 +41,7 @@ void bs_player::move(){
 
     if(game == nullptr || hidden_grid == nullptr || hit_grid == nullptr){
         std::cout << "Can't move on a nullptr {game, hidden_grid, hit_grid}" << std::endl;
-        return;
+        throw illegal_move_exception("Move on nullptr");
     }
 
     int r, c;
