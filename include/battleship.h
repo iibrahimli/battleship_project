@@ -16,6 +16,14 @@ namespace bship{
     class battleship;
 
 
+    /// Output mode
+    enum output_mode : uint8_t {
+        OM_SILENT,   ///< silent, only show winner at the end of the game
+        OM_PA,       ///< output pa screen only
+        OM_PB,       ///< output pb screen only
+        OM_BOTH      ///< output both player screens on their turns
+    };
+
 
     /*!
         @brief Connect game and its players
@@ -120,19 +128,19 @@ public:
 
 private:
 
-    bs_grid     pa_hidden_grid;  ///< player A ship placement grid
-    bs_grid     pa_hit_grid;     ///< player A hit tracking grid
-    bs_grid     pb_hidden_grid;  ///< player B ship placement grid
-    bs_grid     pb_hit_grid;     ///< player B hit tracking grid
-    bs_player  *pa;              ///< pointer to player A
-    bs_player  *pb;              ///< pointer to player B
-    int         total_shots;     ///< total number of shots (by both player)
-    bool        finished;        ///< game state
-    bool        ships_placed;    ///< all the ships have been placed, game is commenced
-    bool        pa_turn;         ///< current turn: player A
-    bool        pa_won;          ///< true if player A has won, false otherwise. only relevant if game is finished
-    bool        verbose;         ///< if true, game will print moves to stdout
-
+    bs_grid       pa_hidden_grid;  ///< player A ship placement grid
+    bs_grid       pa_hit_grid;     ///< player A hit tracking grid
+    bs_grid       pb_hidden_grid;  ///< player B ship placement grid
+    bs_grid       pb_hit_grid;     ///< player B hit tracking grid
+    bs_player    *pa;              ///< pointer to player A
+    bs_player    *pb;              ///< pointer to player B
+    int           total_shots;     ///< total number of shots (by both player)
+    bool          finished;        ///< game state
+    bool          ships_placed;    ///< all the ships have been placed, game is commenced
+    bool          pa_turn;         ///< current turn: player A
+    bool          pa_won;          ///< true if player A has won, false otherwise. only relevant if game is finished
+    output_mode   output;          ///< game verbosity
+    
 };
 
 

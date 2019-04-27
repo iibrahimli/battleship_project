@@ -119,11 +119,11 @@ void battleship::start(){
     while(!finished){
         if(pa_turn){
             pa->move();
-            if(verbose) print_grids(&pa_hidden_grid, &pa_hit_grid);
+            if(output == OM_BOTH || output == OM_PA) print_grids(&pa_hidden_grid, &pa_hit_grid);
         }
         else{
             pb->move();
-            if(verbose) print_grids(&pb_hidden_grid, &pb_hit_grid);
+            if(output == OM_BOTH || output == OM_PB) print_grids(&pb_hidden_grid, &pb_hit_grid);
         }
     }
 }

@@ -2,10 +2,10 @@
 
 namespace bship{
 
-console_game::console_game(size_t rows, size_t cols, bs_player *a, bs_player *b, bool verb)
+console_game::console_game(size_t rows, size_t cols, bs_player *a, bs_player *b, output_mode om)
 :   pa(a), pb(b)
 {
-    game = new battleship(10, 10, verb);
+    game = new battleship(10, 10, om);
     if(pa == nullptr) pa = new bs_player("player A");
     if(pb == nullptr) pb = new bs_player("player B");
     connect(game, pa, pb);

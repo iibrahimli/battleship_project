@@ -89,7 +89,7 @@ public:
     friend void connect(battleship *game, bs_player *pa, bs_player *pb);    
 
 
-private:
+protected:
 
     std::string             name;         ///< name of the player
     bs_grid                *hidden_grid;  ///< pointer to ship placement grid
