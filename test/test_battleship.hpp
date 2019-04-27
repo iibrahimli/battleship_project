@@ -6,7 +6,7 @@
 #include <cppunit/TestCaller.h>
 #include <cppunit/TestRunner.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include "battleship.hpp"
+#include "battleship.h"
 #include "exceptions.hpp"
 
 

@@ -5,16 +5,16 @@
 #ifndef BATTLESHIP_HPP
 #define BATTLESHIP_HPP
 
-#include "bs_grid.hpp"
-#include "bs_player.hpp"
+#include "bs_grid.h"
+#include "bs_player.h"
 #include "exceptions.hpp"
 
 
 namespace bship{
 
+    class bs_player;
     class battleship;
 
-    class bs_player;
 
 
     /*!
@@ -54,39 +54,27 @@ public:
 
         @param width, height Dimensions of the grid
     */
-    battleship(size_t width, size_t height)
-    :   pa_hidden_grid(width, height),
-        pa_hit_grid   (width, height),
-        pb_hidden_grid(width, height),
-        pb_hit_grid   (width, height),
-        finished(false),
-        ships_placed(false),
-        pa_turn(true),
-        pa_won(false)
-    {
-        pa = nullptr;
-        pb = nullptr;
-    }
+    battleship(size_t width, size_t height);
 
 
     /// Player a getter
-    bs_player * get_pa(){ return pa; }
+    bs_player * get_pa();
 
 
     /// Player b getter
-    bs_player * get_pb(){ return pb; }
+    bs_player * get_pb();
 
 
     /// Player a setter
-    void set_pa(bs_player *p){ pa = p; }
+    void set_pa(bs_player *p);
 
 
     /// Player b setter
-    void set_pb(bs_player *p){ pb = p; }
+    void set_pb(bs_player *p);
 
 
     /// returns the pointer to winner
-    bs_player * get_winner(){ return (!finished) ? nullptr : (pa_won) ? pa : pb; }
+    bs_player * get_winner();
 
 
     /*!
@@ -103,25 +91,7 @@ public:
         @return false if its impossible to place the ship at the 
                 given configuration, true otherwise
     */
-    bool place_ship(ship_type type, size_t row, size_t col, ship_orientation orient){
-        bool res;
-
-        // place the ship on current player's hidden grid
-        // may throw illegal_move_exception
-        if(pa_turn){
-            res = pa_hidden_grid.place_ship(type, row, col, orient);
-            if(pa_hidden_grid.is_ready()) ships_placed = true;
-        }
-        else{
-            res = pb_hidden_grid.place_ship(type, row, col, orient);
-            if(pb_hidden_grid.is_ready()) ships_placed = true;
-        }
-
-        // go to next turn if this turn was successful
-        if(res) pa_turn = !pa_turn;
-
-        return res;
-    }
+    bool place_ship(ship_type type, size_t row, size_t col, ship_orientation orient);
 
 
     /*!
@@ -134,41 +104,11 @@ public:
         @param row, col Coordinates of the cell to be shot at
         @return The result of the shot (one of HT_MISS, HT_HIT, and HT_SINK) and id of ship sunk (if sunk)
     */
-    std::pair<shot_result, int> shoot_at(size_t row, size_t col){
-        std::pair<shot_result, int> res;
-        // instead of doing the same thing in two branches, pointers are kept
-        bs_grid *opponent_hidden_grid, *player_hit_grid;
-
-        // set relevant hidden and hit grids (DRY)
-        player_hit_grid      = (pa_turn) ? &pa_hit_grid    : &pb_hit_grid;
-        opponent_hidden_grid = (pa_turn) ? &pb_hidden_grid : &pa_hidden_grid;
-
-        // may throw index_exception or illegal_move_exception
-        res = opponent_hidden_grid->shoot_at(row, col);
-        
-        // set appropriate state on current player's hit grid based on result
-        player_hit_grid->cell_at(row, col).state = (res.first == SR_MISS) ? CS_MISSED : CS_DESTROYED;
-
-        // if the hit ship was the last one
-        if(res.first == SR_SINK && opponent_hidden_grid->get_num_alive_ships() == 0){
-            finished = true;
-        }
-
-        // next player moves if current player misses
-        if(res.first == SR_MISS) pa_turn = !pa_turn;
-
-        return res;
-    }
+    std::pair<shot_result, int> shoot_at(size_t row, size_t col);
 
 
     /// Starts the game, i.e. game will call players until game is finished
-    void start(){
-        while(!finished){
-            pa->move();
-            if(finished) break;
-            pb->move();
-        }
-    }
+    void start();
 
 
 private:
@@ -185,20 +125,6 @@ private:
     bool        pa_won;          ///< true if player A has won, false otherwise. only relevant if game is finished
 
 };
-
-
-
-void bship::connect(battleship *game, bs_player *pa, bs_player *pb){
-    if(!game) return;
-    if(pa){
-        game->set_pa(pa);
-        pa->set_game(game);
-    }
-    if(pb){
-        game->set_pb(pb);
-        pb->set_game(game);
-    }
-}
 
 
 

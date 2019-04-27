@@ -1,6 +1,6 @@
-#include "battleship.hpp"
-#include "bs_player.hpp"
-#include "console_game.hpp"
+#include "battleship.h"
+#include "bs_player.h"
+#include "console_game.h"
 
 using namespace bship;
 using namespace std;

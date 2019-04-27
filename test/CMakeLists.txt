@@ -1,7 +1,7 @@
 project(battleship_test)
 
 add_executable(tests main.cpp)
-target_link_libraries(tests cppunit)
+target_link_libraries(tests cppunit bs)
 
 enable_testing()
 
