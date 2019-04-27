@@ -119,11 +119,11 @@ void battleship::start(){
     while(!finished){
         if(pa_turn){
             pa->move();
-            print_grids(&pa_hidden_grid, &pa_hit_grid);
+            if(verbose) print_grids(&pa_hidden_grid, &pa_hit_grid);
         }
         else{
             pb->move();
-            print_grids(&pb_hidden_grid, &pb_hit_grid);
+            if(verbose) print_grids(&pb_hidden_grid, &pb_hit_grid);
         }
     }
 }
@@ -143,10 +143,6 @@ void connect(battleship *gm, bs_player *pa, bs_player *pb){
         pb->set_hidden_grid(&(gm->pb_hidden_grid));
         pb->set_hit_grid(&(gm->pb_hit_grid));
     }
-
-    std::cout << "pa: game=" << pa->game << ", hidden=" << pa->hidden_grid << ", hit=" << pa->hit_grid << std::endl;
-    std::cout << "pb: game=" << pb->game << ", hidden=" << pb->hidden_grid << ", hit=" << pb->hit_grid << std::endl;
-
 }
 
 

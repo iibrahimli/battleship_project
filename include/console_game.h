@@ -48,7 +48,7 @@ public:
         @param rows, cols Dimensions of the game
         @param a, b Pointers to player A and player B resp.
     */
-    console_game(size_t rows, size_t cols, bs_player *a = nullptr, bs_player *b = nullptr);
+    console_game(size_t rows, size_t cols, bs_player *a = nullptr, bs_player *b = nullptr, bool verb=false);
 
 
     /// Destructor deletes the game and players
