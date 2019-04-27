@@ -22,7 +22,7 @@ namespace bship{
 
         @param g1, g2 Grids to be printed
     */
-    void print_grids(bship::bs_grid g1, bship::bs_grid g2); 
+    void print_grids(bship::bs_grid *g1, bship::bs_grid *g2); 
 
 }
 
@@ -45,9 +45,10 @@ public:
         the players is nullptr, that player is initialized
         to random bot
 
+        @param rows, cols Dimensions of the game
         @param a, b Pointers to player A and player B resp.
     */
-    console_game(bs_player *a = nullptr, bs_player *b = nullptr);
+    console_game(size_t rows, size_t cols, bs_player *a = nullptr, bs_player *b = nullptr);
 
 
     /// Destructor deletes the game and players

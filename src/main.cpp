@@ -7,7 +7,8 @@ using namespace std;
 
 int main(){
 
-    console_game game{};
+    srand(time(NULL));
+    console_game game(10, 10);
     game.start();
     
     return 0;

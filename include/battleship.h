@@ -77,6 +77,10 @@ public:
     bs_player * get_winner();
 
 
+    /// returns total shots by both players
+    int get_total_shots();
+
+
     /*!
         @brief Place a ship
 
@@ -122,6 +126,7 @@ private:
     bs_grid     pb_hit_grid;     ///< player B hit tracking grid
     bs_player  *pa;              ///< pointer to player A
     bs_player  *pb;              ///< pointer to player B
+    int         total_shots;     ///< total number of shots (by both player)
     bool        finished;        ///< game state
     bool        ships_placed;    ///< all the ships have been placed, game is commenced
     bool        pa_turn;         ///< current turn: player A

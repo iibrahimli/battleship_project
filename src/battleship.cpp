@@ -1,6 +1,8 @@
 #include "battleship.h"
+#include "console_game.h"
 
 namespace bship{
+
 
 
 battleship::battleship(size_t width, size_t height, bool verb)
@@ -8,6 +10,7 @@ battleship::battleship(size_t width, size_t height, bool verb)
     pa_hit_grid   (width, height),
     pb_hidden_grid(width, height),
     pb_hit_grid   (width, height),
+    total_shots(0),
     finished(false),
     ships_placed(false),
     pa_turn(true),
@@ -34,6 +37,9 @@ void battleship::set_pb(bs_player *p){ pb = p; }
 bs_player * battleship::get_winner(){ return (!finished) ? nullptr : (pa_won) ? pa : pb; }
 
 
+int battleship::get_total_shots(){ return total_shots; }
+
+
 bool battleship::place_ship(ship_type type, size_t row, size_t col, ship_orientation orient){
     bool res;
 
@@ -53,10 +59,18 @@ bool battleship::place_ship(ship_type type, size_t row, size_t col, ship_orienta
         if(verbose){
             std::string pl = (pa_turn) ? pa->get_name() : pb->get_name();
             std::cout << pl << " placed a " << (int) type << "-cell ship at (" << row << ", " << col << ") ";
-            std::cout << (orient == SO_HOR) ? "horizontally" : "vertically";
+            std::cout << ((orient == SO_HOR) ? "horizontally" : "vertically");
             std::cout << std::endl;
         }
         pa_turn = !pa_turn;
+    }
+    else{
+        if(verbose){
+            std::string pl = (pa_turn) ? pa->get_name() : pb->get_name();
+            std::cout << pl << " tried to place a " << (int) type << "-cell ship at (" << row << ", " << col << ") ";
+            std::cout << ((orient == SO_HOR) ? "horizontally" : "vertically");
+            std::cout << std::endl;
+        }
     }
 
     return res;
@@ -95,15 +109,22 @@ std::pair<shot_result, int> battleship::shoot_at(size_t row, size_t col){
         std::cout << std::endl;
     }
 
+    ++total_shots;
+
     return res;
 }
 
 
 void battleship::start(){
     while(!finished){
-        pa->move();
-        if(finished) break;
-        pb->move();
+        if(pa_turn){
+            pa->move();
+            print_grids(&pa_hidden_grid, &pa_hit_grid);
+        }
+        else{
+            pb->move();
+            print_grids(&pb_hidden_grid, &pb_hit_grid);
+        }
     }
 }
 

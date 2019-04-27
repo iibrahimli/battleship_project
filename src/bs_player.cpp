@@ -7,7 +7,16 @@ bs_player::bs_player(std::string& n, bs_grid* hdg, bs_grid* htg, battleship *gm)
 :   name(n),
     hidden_grid(hdg),
     hit_grid(htg),
-    game(gm)
+    game(gm),
+    sindex(0)
+{}
+
+bs_player::bs_player(std::string nm)
+:   name(nm),
+    hidden_grid(nullptr),
+    hit_grid(nullptr),
+    game(nullptr),
+    sindex(0)
 {}
 
 
@@ -15,7 +24,8 @@ bs_player::bs_player()
 :   name("<Unknown>"),
     hidden_grid(nullptr),
     hit_grid(nullptr),
-    game(nullptr)
+    game(nullptr),
+    sindex(0)
 {}
 
 
@@ -47,8 +57,8 @@ void bs_player::move(){
     int r, c;
     std::pair<shot_result, int> sr;
     bool valid_move = false;
-    static std::vector<ship_type> stype;
-    static int sindex = 0;
+    unsigned long tries = 0;
+    
     if(stype.size() == 0){
         // add possible ship types to array
         for(auto& p : hidden_grid->get_max_n_ships()){
@@ -60,6 +70,9 @@ void bs_player::move(){
 
     if(hidden_grid->is_ready()){
         while(!valid_move){
+
+            ++tries;
+
             r = rand() % hit_grid->get_height();
             c = rand() % hit_grid->get_width();
 
@@ -72,14 +85,17 @@ void bs_player::move(){
     }
     else{
         while(!valid_move){
+
+            ++tries;            
+
             r = rand() % hit_grid->get_height();
             c = rand() % hit_grid->get_width();
-            ori = (rand() % 2) ? SO_HOR : SO_VERT;                
+            ori = (rand() % 2) ? SO_HOR : SO_VERT;
 
             try{
                 // TODO
                 valid_move = game->place_ship(stype[sindex], r, c, ori);
-                ++sindex;
+                if(valid_move) ++sindex;
             }
             catch(illegal_move_exception& e){}
         }

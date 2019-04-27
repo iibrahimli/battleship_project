@@ -44,6 +44,10 @@ public:
     bs_player(std::string& n, bs_grid* hdg, bs_grid* htg, battleship *gm);
 
 
+    /// Name constructor
+    bs_player(std::string nm);
+
+
     /// Default constructor initializes everything to nullptr
     bs_player();
 
@@ -87,10 +91,12 @@ public:
 
 private:
 
-    std::string  name;         ///< name of the player
-    bs_grid     *hidden_grid;  ///< pointer to ship placement grid
-    bs_grid     *hit_grid;     ///< pointer to hit tracking grid
-    battleship  *game;         ///< pointer to game
+    std::string             name;         ///< name of the player
+    bs_grid                *hidden_grid;  ///< pointer to ship placement grid
+    bs_grid                *hit_grid;     ///< pointer to hit tracking grid
+    battleship             *game;         ///< pointer to game
+    std::vector<ship_type>  stype;        ///< placement: ship types to place
+    int                     sindex;       ///< placement: index in stype
 
 };
 

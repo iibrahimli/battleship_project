@@ -2,12 +2,12 @@
 
 namespace bship{
 
-console_game::console_game(bs_player *a, bs_player *b)
+console_game::console_game(size_t rows, size_t cols, bs_player *a, bs_player *b)
 :   pa(a), pb(b)
 {
-    game = new battleship(10, 10);
-    if(pa == nullptr) pa = new bs_player();
-    if(pb == nullptr) pb = new bs_player();
+    game = new battleship(10, 10, true);
+    if(pa == nullptr) pa = new bs_player("player A");
+    if(pb == nullptr) pb = new bs_player("player B");
     connect(game, pa, pb);
 }
 
@@ -24,15 +24,16 @@ void console_game::start(){
 
     // the game will handle moves until the end
     std::cout << game->get_winner()->get_name() << " won" << std::endl;
+    std::cout << "total shots: " << game->get_total_shots() << std::endl;
 }
 
 
 
-void print_grids(bship::bs_grid g1, bship::bs_grid g2){
+void print_grids(bship::bs_grid *g1, bship::bs_grid *g2){
 
     // print top numbers
     std::cout << "   ";
-    for(size_t i=0; i<g1.get_width()*3-1; ++i){
+    for(size_t i=0; i<g1->get_width()*3-1; ++i){
         if((i+2) % 3 == 0)
             std::cout << i / 3 << " ";
         else
@@ -42,7 +43,7 @@ void print_grids(bship::bs_grid g1, bship::bs_grid g2){
     // 10 spaces between grids
     std::cout << "          ";
     std::cout << "    ";
-    for(size_t i=0; i<g2.get_width()*3-1; ++i){
+    for(size_t i=0; i<g2->get_width()*3-1; ++i){
         if((i+2) % 3 == 0)
             std::cout << i / 3 << " ";
         else
@@ -54,23 +55,23 @@ void print_grids(bship::bs_grid g1, bship::bs_grid g2){
 
     // print first line
     std::cout << "  ┌─";
-    for(size_t i=0; i<g1.get_width()-1; ++i) std::cout << "──┬─";
+    for(size_t i=0; i<g1->get_width()-1; ++i) std::cout << "──┬─";
     std::cout << "──┐";
 
     std::cout << "          ";
     std::cout << "  ┌─";
-    for(size_t i=0; i<g2.get_width()-1; ++i) std::cout << "──┬─";
+    for(size_t i=0; i<g2->get_width()-1; ++i) std::cout << "──┬─";
     std::cout << "──┐";
 
     std::cout << std::endl;
 
 
     // print cells
-    for(size_t r=0; r<g1.get_height(); ++r){
+    for(size_t r=0; r<g1->get_height(); ++r){
         std::cout << r << " ";
         std::cout << "│";
-        for(size_t c=0; c<g1.get_width(); ++c){
-            switch(g1.cell_at(r, c).state){
+        for(size_t c=0; c<g1->get_width(); ++c){
+            switch(g1->cell_at(r, c).state){
                 case bship::CS_EMPTY:
                     std::cout << "   ";
                     break;
@@ -87,12 +88,12 @@ void print_grids(bship::bs_grid g1, bship::bs_grid g2){
             std::cout << "│";
         }
 
-        if(r < g2.get_height()){
+        if(r < g2->get_height()){
             std::cout << "          ";
             std::cout << r << " ";
             std::cout << "│";
-            for(size_t c=0; c<g2.get_width(); ++c){
-                switch(g2.cell_at(r, c).state){
+            for(size_t c=0; c<g2->get_width(); ++c){
+                switch(g2->cell_at(r, c).state){
                     case bship::CS_EMPTY:
                         std::cout << "   ";
                         break;
@@ -112,20 +113,20 @@ void print_grids(bship::bs_grid g1, bship::bs_grid g2){
 
         std::cout << std::endl;
 
-        if(r != g1.get_height()-1){
+        if(r != g1->get_height()-1){
             // print separating lines if its not the last row
             std::cout << "  ├─";
-            for(size_t i=0; i<g1.get_width()-1; ++i) std::cout << "──┼─";
+            for(size_t i=0; i<g1->get_width()-1; ++i) std::cout << "──┼─";
             std::cout << "──┤";
-            if(r == g2.get_height()-1) 
+            if(r == g2->get_height()-1) 
                 std::cout << std::endl;
         }
         
-        if(r < g2.get_height()-1){
+        if(r < g2->get_height()-1){
             std::cout << "          ";
             // print separating lines if its not the last row
             std::cout << "  ├─";
-            for(size_t i=0; i<g2.get_width()-1; ++i) std::cout << "──┼─";
+            for(size_t i=0; i<g2->get_width()-1; ++i) std::cout << "──┼─";
             std::cout << "──┤";
             std::cout << std::endl;
         }
@@ -135,12 +136,12 @@ void print_grids(bship::bs_grid g1, bship::bs_grid g2){
 
     // print last line
     std::cout << "  └─";
-    for(size_t i=0; i<g1.get_width()-1; ++i) std::cout << "──┴─";
+    for(size_t i=0; i<g1->get_width()-1; ++i) std::cout << "──┴─";
     std::cout << "──┘";
 
     std::cout << "          ";
     std::cout << "  └─";
-    for(size_t i=0; i<g2.get_width()-1; ++i) std::cout << "──┴─";
+    for(size_t i=0; i<g2->get_width()-1; ++i) std::cout << "──┴─";
     std::cout << "──┘" << std::endl;
 
 }
