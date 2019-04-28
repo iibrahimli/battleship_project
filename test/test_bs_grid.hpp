@@ -95,7 +95,7 @@ public:
     // test targeting and hits
     void test_shoot_at(){
 
-        bship::bs_grid grid(10, 8);
+        bship::bs_grid grid(10, 10);
         std::pair<bship::shot_result, int> sr;
 
         // shooting an empty cell
@@ -126,7 +126,7 @@ public:
         CPPUNIT_ASSERT_EQUAL(bship::SR_SINK, sr.first);
         CPPUNIT_ASSERT_EQUAL(1, sr.second);
         CPPUNIT_ASSERT_EQUAL(0, grid.get_num_alive_ships());
-        CPPUNIT_ASSERT_EQUAL(0, (int) grid.get_n_ships()[bship::ST_TWO]);
+        CPPUNIT_ASSERT_EQUAL(1, (int) grid.get_n_ships()[bship::ST_TWO]);
 
         // shooting a previously shot cell
         CPPUNIT_ASSERT_THROW(grid.shoot_at(1, 1), bship::illegal_move_exception);
@@ -136,7 +136,7 @@ public:
 
         // shooting invalid index
         CPPUNIT_ASSERT_THROW(grid.shoot_at(-1, 1), bship::index_exception);
-        CPPUNIT_ASSERT_THROW(grid.shoot_at(1, 8), bship::index_exception);
+        CPPUNIT_ASSERT_THROW(grid.shoot_at(8, 10), bship::index_exception);
 
     }
 
