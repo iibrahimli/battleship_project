@@ -25,7 +25,7 @@ namespace bship{
 
     Takes commands from human (terminal input)
 */
-class bship::human_player : bs_player {
+class bship::human_player : public bs_player {
 public:
 
     /*!

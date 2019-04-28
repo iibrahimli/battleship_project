@@ -5,6 +5,7 @@
 #ifndef BATTLESHIP_HPP
 #define BATTLESHIP_HPP
 
+#include <cstdlib>
 #include "bs_grid.h"
 #include "bs_player.h"
 #include "exceptions.hpp"
@@ -21,7 +22,8 @@ namespace bship{
         OM_SILENT,   ///< silent, only show winner at the end of the game
         OM_PA,       ///< output pa screen only
         OM_PB,       ///< output pb screen only
-        OM_BOTH      ///< output both player screens on their turns
+        OM_BOTH,     ///< output both player screens on their turns
+        OM_TXTONLY   ///< experimental text-only game (for bot benchmarks)
     };
 
 

@@ -32,18 +32,24 @@ void human_player::move(){
     bool valid_move = false;
     int type, orient;
 
-    if(hidden_grid->is_ready()){
+    if(!hidden_grid->is_ready()){
         // placement
         while(!valid_move){
             std::cout << "Enter ship type (length) (2, 3, 4 or 5), coordinates (row, col) and orientation (0: HOR, 1:VERT)\n";
             std::cout << "ex: 2 5 0 1 = 2-cell ship placed vertically at (5, 0)\n";
             std::cout << ">> ";
-            std::cin >> type >> r >> c >> orient;
+            std::cin >> type;
+            std::cin >> r;
+            std::cin >> c;
+            std::cin >> orient;
+            if(std::cin.eof()) throw std::runtime_error("EOF");
+
             st = (ship_type) type;
             ori = (ship_orientation) orient;
 
             try{
-                valid_move = game->place_ship(stype[sindex], r, c, ori);
+                valid_move = game->place_ship(st, r, c, ori);
+                if(!valid_move) std::cout << "Can't place that way" << std::endl;
             }
             catch(illegal_move_exception& e){
                 std::cout << "Illegal move, try again" << std::endl;
@@ -53,10 +59,12 @@ void human_player::move(){
     else{
         // shooting
         while(!valid_move){
-            std::cout << "Enter  coordinates (row, col)\n";
+            std::cout << "Enter coordinates (row, col)\n";
             std::cout << "ex: 2 5 = shoot cell (2, 5)\n";
             std::cout << ">> ";
-            std::cin >> r >> c;
+            std::cin >> r;
+            std::cin >> c;
+            if(std::cin.eof()) throw std::runtime_error("EOF");
 
             try{
                 sr = game->shoot_at(r, c);
@@ -64,6 +72,9 @@ void human_player::move(){
             }
             catch(illegal_move_exception& e){
                 std::cout << "Illegal move, try again" << std::endl;
+            }
+            catch(index_exception& e){
+                std::cout << "Index out of bounds, try again" << std::endl;
             }
         }
     }

@@ -68,34 +68,29 @@ void bs_player::move(){
     }
     ship_orientation ori;
 
-    if(hidden_grid->is_ready()){
+    if(!hidden_grid->is_ready()){
         while(!valid_move){
+            ++tries;            
+            r = rand() % hit_grid->get_height();
+            c = rand() % hit_grid->get_width();
+            ori = (rand() % 2) ? SO_HOR : SO_VERT;
 
+            try{
+                valid_move = game->place_ship(stype[sindex], r, c, ori);
+                if(valid_move) ++sindex;
+            }
+            catch(illegal_move_exception& e){}
+        }
+    }
+    else{
+         while(!valid_move){
             ++tries;
-
             r = rand() % hit_grid->get_height();
             c = rand() % hit_grid->get_width();
 
             try{
                 sr = game->shoot_at(r, c);
                 valid_move = true;
-            }
-            catch(illegal_move_exception& e){}
-        }
-    }
-    else{
-        while(!valid_move){
-
-            ++tries;            
-
-            r = rand() % hit_grid->get_height();
-            c = rand() % hit_grid->get_width();
-            ori = (rand() % 2) ? SO_HOR : SO_VERT;
-
-            try{
-                // TODO
-                valid_move = game->place_ship(stype[sindex], r, c, ori);
-                if(valid_move) ++sindex;
             }
             catch(illegal_move_exception& e){}
         }
