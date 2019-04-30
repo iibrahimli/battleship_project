@@ -126,6 +126,8 @@ public:
 
 
     friend void connect(battleship *game, bs_player *pa, bs_player *pb);
+    friend class human_player;
+    friend class slick_player;
 
 
 private:
