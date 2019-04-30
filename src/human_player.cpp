@@ -30,22 +30,32 @@ void human_player::move(){
     ship_orientation ori;
     std::pair<shot_result, int> sr;
     bool valid_move = false;
-    int type, orient;
+    int type;
+    char orient = 'd';
 
     if(!hidden_grid->is_ready()){
         // placement
         while(!valid_move){
-            std::cout << "Enter ship type (length) (2, 3, 4 or 5), coordinates (row, col) and orientation (0: HOR, 1:VERT)\n";
-            std::cout << "ex: 2 5 0 1 = 2-cell ship placed vertically at (5, 0)\n";
+            std::cout << "Enter ship type (length) (2, 3, 4 or 5), coordinates (row, col) and\n";
+            std::cout << "orientation (h for horizontal, v for vertical)\n";
+            std::cout << "ex: 2 5 0 v = 2-cell ship placed vertically at (5, 0)\n";
+            std::cout << "ships left to place:\n";
+            for(auto& s : hidden_grid->get_n_ships()){
+                std::cout << (int) s.first << "-cell : " << (int) hidden_grid->get_max_n_ships()[s.first] - s.second << std::endl;
+            }
+
             std::cout << ">> ";
             std::cin >> type;
             std::cin >> r;
             std::cin >> c;
             std::cin >> orient;
-            if(std::cin.eof()) throw std::runtime_error("EOF");
+            if(std::cin.eof()) throw std::runtime_error("Unexpected EOF");
 
             st = (ship_type) type;
-            ori = (ship_orientation) orient;
+
+            if(orient == 'V' || orient == 'v') ori = SO_VERT;
+            else if(orient == 'H' || orient == 'h') ori = SO_HOR;
+            else { std::cout << "Invalid orientation" << std::endl; continue; }
 
             try{
                 valid_move = game->place_ship(st, r, c, ori);
