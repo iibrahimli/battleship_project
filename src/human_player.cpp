@@ -81,10 +81,12 @@ void human_player::move(){
                 valid_move = true;
             }
             catch(illegal_move_exception& e){
-                std::cout << "Illegal move, try again" << std::endl;
+                std::cout<<e.what()<<std::endl;
             }
             catch(index_exception& e){
-                std::cout << "Index out of bounds, try again" << std::endl;
+                std::cout<<e.what()<<std::endl;
+                std::cin.clear();
+                std::cin.ignore(100, '\n');
             }
         }
     }
