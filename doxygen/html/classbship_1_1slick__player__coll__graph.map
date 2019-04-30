@@ -1,0 +1,5 @@
+<map id="bship::slick_player" name="bship::slick_player">
+<area shape="rect" id="node2" href="$classbship_1_1bs__player.html" title="bship::bs_player" alt="" coords="65,109,182,136"/>
+<area shape="rect" id="node3" href="$classbship_1_1bs__grid.html" title="bship::bs_grid" alt="" coords="5,5,108,32"/>
+<area shape="rect" id="node4" href="$classbship_1_1battleship.html" title="bship::battleship" alt="" coords="133,5,250,32"/>
+</map>
