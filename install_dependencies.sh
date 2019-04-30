@@ -1,0 +1,1 @@
+sudo apt install g++ cmake libcppunit-dev doxygen
