@@ -20,9 +20,9 @@ console_game::~console_game(){
 
 
 void console_game::start(){
+    // the game will handle moves until the end
     game->start();
 
-    // the game will handle moves until the end
     std::cout << game->get_winner()->get_name() << " won" << std::endl;
     std::cout << "total shots: " << game->get_total_shots() << std::endl;
 }
