@@ -13,6 +13,12 @@ Go to a folder you want the project to be in your file system and type the follo
 git clone https://github.com/iibrahimli/battleship_project.git
 ```
 
+Then, install dependencies with:
+
+``` bash
+sudo bash install_dependencies.sh
+```
+
 Or download as archive an unzip in a directory of your choice.
 Enter the downloaded folder and create a build folder with the following commands
 
@@ -54,6 +60,12 @@ Tests can be run with the following command from the root of the project folder:
 ./bin/tests
 ```
 
+or
+
+``` bash
+make test
+```
+
 or 
 
 ``` bash
@@ -65,3 +77,17 @@ ctest .
 * **Imran Ibrahimli** - [iibrahimli](https://github.com/iibrahimli)
 * **Ughur Aghakishiyev** - [Theagh](https://github.com/theagh)
 * **Javid Huseynov** - [cavid990](https://github.com/cavid990)
+
+## Screenshots
+
+User name input and difficulty selection:
+
+![greet](https://raw.githubusercontent.com/iibrahimli/battleship_project/master/diff_select.png)
+
+Ship placement phase:
+
+![ingame1](https://raw.githubusercontent.com/iibrahimli/battleship_project/master/ingame1.png)
+
+Shooting phase:
+
+![ingame2](https://raw.githubusercontent.com/iibrahimli/battleship_project/master/ingame2.png)
