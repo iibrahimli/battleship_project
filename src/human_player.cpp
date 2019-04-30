@@ -36,7 +36,7 @@ void human_player::move(){
 
     if(!hidden_grid->is_ready()){
         // placement
-        
+
         while(!valid_move){
             std::cout << "Enter ship type (length) (2, 3, 4 or 5), coordinates (row, col) and\n";
             std::cout << "orientation (h for horizontal, v for vertical)\n";
