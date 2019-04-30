@@ -54,10 +54,11 @@ void bs_player::move(){
         throw illegal_move_exception("Move on nullptr");
     }
 
-    int r, c;
+    size_t r, c;
     std::pair<shot_result, int> sr;
     bool valid_move = false;
     unsigned long tries = 0;
+    ship_orientation ori;
     
     if(stype.size() == 0){
         // add possible ship types to array
@@ -66,7 +67,6 @@ void bs_player::move(){
                 stype.push_back(p.first);
         }
     }
-    ship_orientation ori;
 
     if(!hidden_grid->is_ready()){
         while(!valid_move){

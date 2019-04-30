@@ -96,7 +96,7 @@ protected:
     bs_grid                *hit_grid;     ///< pointer to hit tracking grid
     battleship             *game;         ///< pointer to game
     std::vector<ship_type>  stype;        ///< placement: ship types to place
-    int                     sindex;       ///< placement: index in stype
+    size_t                  sindex;       ///< placement: index in stype
 
 };
 
