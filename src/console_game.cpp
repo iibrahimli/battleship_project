@@ -79,7 +79,7 @@ void print_grids(bship::bs_grid *g1, bship::bs_grid *g2){
                     std::cout << "███";
                     break;
                 case bship::CS_MISSED:
-                    std::cout << " X ";
+                    std::cout << " • ";
                     break;
                 case bship::CS_DESTROYED:
                     std::cout << "╬╬╬";
@@ -101,7 +101,7 @@ void print_grids(bship::bs_grid *g1, bship::bs_grid *g2){
                         std::cout << "███";
                         break;
                     case bship::CS_MISSED:
-                        std::cout << " X ";
+                        std::cout << " • ";
                         break;
                     case bship::CS_DESTROYED:
                         std::cout << "╬╬╬";

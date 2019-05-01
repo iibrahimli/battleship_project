@@ -36,7 +36,7 @@ int main(){
         for(int i=0; i<SLIDER_LEN-before; ++i) cout << "=";
         cout << "]    (0.00: random bot, 1.00: perfect player)  ";
         read = getchar();
-        if(read == '-' && diff >= 0.04) diff -= 0.05;
+        if(read == '-' && diff >= 0.05) diff -= 0.05;
         else if(read == '+' && diff <= 0.96) diff += 0.05;
         else if(read == 'q') { system("stty cooked"); cout << endl; return 1; }
         else cout << "     ";
