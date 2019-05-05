@@ -38,7 +38,7 @@ make
 This will create battleship and tests executables in 'bin' folder and libbs.a static library in 'lib' folder
 
 ## Running the Game
-Game can be executed with the following command from the root folder of the project:
+Game can be executed with the following command from the `build` directory:
 
 ``` bash
 ./bin/battleship
@@ -54,7 +54,7 @@ This repository contains also the unit tests written in CPPUnit unit testing fra
 sudo apt-get install libcppunit-dev
 ```
 
-Tests can be run with the following command from the root of the project folder:
+Tests can be run with the following command from `build`:
 
 ``` bash
 ./bin/tests
