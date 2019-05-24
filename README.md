@@ -46,6 +46,8 @@ Game can be executed with the following command from the `build` directory:
 
 In the beginnning the user is asked to enter a name. Then the user will add ships of different sizes ( 2-5 ) to the grid.
 
+**NOTE**: Make sure to resize your terminal to the minimum recommended size `96 x 32` (96 columns and 32 rows) for the game.
+
 ## Running the tests
 
 This repository contains also the unit tests written in CPPUnit unit testing framework. In order to make use of these tests you have to install libcppunit-dev library.
